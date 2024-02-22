@@ -1,0 +1,25 @@
+{
+    "name": "rahul900day/tiktoken-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rahul Dey",
+            "email": "rahul900day@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "7.9.x-dev",
+        "ext-ctype": "*",
+        "symfony/filesystem": "6.4.x-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rahul900day\\Tiktoken\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require-dev": {
+        "symfony/var-dumper": "6.4.x-dev"
+    }
+}
