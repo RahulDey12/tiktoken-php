@@ -24,7 +24,7 @@ class Registry
         self::$encodings[$name] = $encoding;
     }
 
-    public function getEncoding(string $name)
+    public function getEncoding(string $name): Encoder
     {
         if(array_key_exists($name, self::$resolvedEncodings)) {
             return self::$resolvedEncodings[$name];

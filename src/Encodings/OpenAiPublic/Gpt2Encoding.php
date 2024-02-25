@@ -3,6 +3,7 @@
 namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 
 use Rahul900day\Tiktoken\Contracts\Encoding;
+use Rahul900day\Tiktoken\Encoder;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Utils\Loader;
 
@@ -15,7 +16,7 @@ final class Gpt2Encoding implements Encoding
         $this->loader = new Loader();
     }
 
-    public function __invoke(): array
+    public function __invoke(): Encoder
     {
         $ranks = $this->loader->loadDataGymRanks(
             "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
@@ -24,14 +25,14 @@ final class Gpt2Encoding implements Encoding
             "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783",
         );
 
-        return [
-            'name' => 'gpt2',
-            'explicit_n_vocab' => 50257,
-            'pat_str' => "/'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/u",
-            'mergeable_ranks' => $ranks,
-            'special_tokens' => [
+        return new Encoder(
+            'gpt2',
+            "/'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/u",
+            $ranks,
+            [
                 SpecialToken::ENDOFTEXT->value => 50256,
             ],
-        ];
+            50257,
+        );
     }
 }

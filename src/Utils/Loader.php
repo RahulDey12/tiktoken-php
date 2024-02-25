@@ -23,6 +23,10 @@ class Loader
         $result = [];
 
         foreach (explode("\n", $contents) as $line) {
+            if(! $line) {
+                continue;
+            }
+
             [$token, $rank] = explode(' ', $line);
             $result[base64_decode($token)] = intval($rank);
         }
