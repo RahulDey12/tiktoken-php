@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Utils;
 
-final class EncoderUtils
+final class EncoderUtil
 {
     public static function toBytes(string $string): array
     {

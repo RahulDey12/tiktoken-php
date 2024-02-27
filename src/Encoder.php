@@ -13,17 +13,17 @@ class Encoder
     public function __construct(
         protected string $name,
         protected string $pattern,
-        protected array $ranks,
+        protected Vocab $vocab,
         protected array $specialTokens,
         ?int $vocabLength = null,
     ){
         $this->maxTokenValue = max(
-            max(array_values($this->ranks)),
+            max(array_values($this->vocab->tokenToRanks)),
             max(0, ...array_values($this->specialTokens)),
         );
 
         if($vocabLength) {
-            if(count($this->ranks) + count($this->specialTokens) !== $vocabLength) {
+            if(count($this->vocab->tokenToRanks) + count($this->specialTokens) !== $vocabLength) {
                 throw new \Exception("Vocab length doesnt match with the actual length of tokens.");
             }
 
@@ -32,7 +32,7 @@ class Encoder
             }
         }
 
-        $this->bpe = new Bpe($this->ranks, $this->specialTokens, $this->pattern);
+        $this->bpe = new Bpe($this->vocab, $this->specialTokens, $this->pattern);
     }
 
     public function encode(string $text, array|string $allowedSpecial = [], string $disallowedSpecial = 'all'): array
@@ -53,8 +53,7 @@ class Encoder
             }
         }
 
-        dd($this->bpe->encode($text, $allowedSpecial));
-        return  [];
+        return $this->bpe->encode($text, $allowedSpecial)[0];
     }
 
     protected function getSpecialTokensKeys(): array

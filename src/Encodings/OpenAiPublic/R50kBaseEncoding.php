@@ -6,6 +6,7 @@ use Rahul900day\Tiktoken\Contracts\Encoding;
 use Rahul900day\Tiktoken\Encoder;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Utils\Loader;
+use Rahul900day\Tiktoken\Vocab;
 
 final class R50kBaseEncoding implements Encoding
 {
@@ -18,15 +19,15 @@ final class R50kBaseEncoding implements Encoding
 
     public function __invoke(): Encoder
     {
-        $ranks = $this->loader->loadTiktokenRanks(
+        $vocab = new Vocab($this->loader->loadTiktokenRanks(
             "https://openaipublic.blob.core.windows.net/encodings/r50k_base.tiktoken",
             "306cd27f03c1a714eca7108e03d66b7dc042abe8c258b44c199a7ed9838dd930",
-        );
+        ));
 
         return new Encoder(
             'r50k_base',
             "/'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/u",
-            $ranks,
+            $vocab,
             [
                 SpecialToken::ENDOFTEXT->value => 50256,
             ],

@@ -24,14 +24,14 @@ class Registry
         self::$encodings[$name] = $encoding;
     }
 
-    public function getEncoding(string $name): Encoder
+    public static function getEncoding(string $name): Encoder
     {
         if(array_key_exists($name, self::$resolvedEncodings)) {
             return self::$resolvedEncodings[$name];
         }
 
         if(count(self::$encodings) === 0) {
-            $this->loadDefaultEncodings();
+            self::loadDefaultEncodings();
         }
 
         if(! array_key_exists($name, self::$encodings)) {
@@ -45,7 +45,7 @@ class Registry
         return $encoding;
     }
 
-    protected function loadDefaultEncodings()
+    protected static function loadDefaultEncodings(): void
     {
         self::registerEncoding('gpt2', new Gpt2Encoding());
         self::registerEncoding('r50k_base', new R50kBaseEncoding());

@@ -57,7 +57,6 @@ class Loader
         $bpeRanks = $this->createBpeRanks($rankToIntByte);
 
         $this->addMergeRanksToBpe($bpeMerges, $bpeRanks, $dataGymByteToByteMap);
-
         $encoderJson = $this->loadEncoderJson($encoderJsonFile, $encoderJsonHash, $dataGymByteToByteMap);
 
         $this->validateBpeAndEncoderJsonRanks($bpeRanks, $encoderJson);
@@ -103,14 +102,21 @@ class Loader
     protected function createBpeRanks(array $rankToIntByte): array {
         $bpeRanks = [];
         foreach ($rankToIntByte as $i => $byte) {
-            $bpeRanks[mb_chr($byte)] = $i;
+            $bpeRanks[EncoderUtil::fromBytes([$byte])] = $i;
         }
         return $bpeRanks;
     }
 
     protected function addMergeRanksToBpe(array $bpeMerges, array &$bpeRanks, array $dataGymByteToByteMap): void {
         foreach ($bpeMerges as [$first, $second]) {
-            $bpeRanks[$this->decodeDataGym($first, $dataGymByteToByteMap) . $this->decodeDataGym($second, $dataGymByteToByteMap)] = count($bpeRanks);
+
+            $tokenBytes = [
+                ...$this->decodeDataGym($first, $dataGymByteToByteMap),
+                ...$this->decodeDataGym($second, $dataGymByteToByteMap)
+            ];
+            $token = EncoderUtil::fromBytes($tokenBytes);
+
+            $bpeRanks[$token] = count($bpeRanks);
         }
     }
 
@@ -118,7 +124,8 @@ class Loader
         $encoderJson = json_decode($this->readFileCached($encoderJsonFile, $encoderJsonHash), true);
         $encoderJsonLoaded = [];
         foreach ($encoderJson as $key => $value) {
-            $encoderJsonLoaded[$this->decodeDataGym($key, $dataGymByteToByteMap)] = $value;
+            $token = EncoderUtil::fromBytes($this->decodeDataGym($key, $dataGymByteToByteMap));
+            $encoderJsonLoaded[$token] = $value;
         }
 
         unset($encoderJsonLoaded['<|endoftext|>']);
@@ -133,7 +140,7 @@ class Loader
         }
     }
 
-    protected function decodeDataGym(string|int $value, array $dataGymByteToByte): string
+    protected function decodeDataGym(string|int $value, array $dataGymByteToByte): array
     {
         $bytes = [];
         $value = strval($value);
@@ -142,7 +149,7 @@ class Loader
             $bytes[] = $dataGymByteToByte[$b];
         }
 
-        return implode(array_map("mb_chr", $bytes));
+        return $bytes;
     }
 
     public function readFile(string $blobPath): string
