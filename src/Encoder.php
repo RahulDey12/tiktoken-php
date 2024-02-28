@@ -3,6 +3,7 @@
 namespace Rahul900day\Tiktoken;
 
 use Exception;
+use Spatie\Async\Pool;
 
 class Encoder
 {
@@ -35,6 +36,22 @@ class Encoder
         $this->bpe = new Bpe($this->vocab, $this->specialTokens, $this->pattern);
     }
 
+    public function encodeOrdinary(string $text): array
+    {
+        return $this->bpe->encodeOrdinary($text);
+    }
+
+    public function encodeOrdinaryBatch(array $texts): array
+    {
+        $result = [];
+
+        foreach ($texts as $text) {
+            $result[] = $this->encodeOrdinary($text);
+        }
+
+        return $result;
+    }
+
     public function encode(string $text, array|string $allowedSpecial = [], string $disallowedSpecial = 'all'): array
     {
         if($allowedSpecial === 'all') {
@@ -54,6 +71,17 @@ class Encoder
         }
 
         return $this->bpe->encode($text, $allowedSpecial)[0];
+    }
+
+    public function decode(array $tokens): string
+    {
+        $text = "";
+
+        foreach ($tokens as $token) {
+            $text .= $this->vocab->getToken($token);
+        }
+
+        return $text;
     }
 
     protected function getSpecialTokensKeys(): array

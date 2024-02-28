@@ -90,6 +90,26 @@ class Bpe
         return [$tokens, $last_piece_token_len];
     }
 
+    public function encodeOrdinary(string $text): array
+    {
+        $tokens = [];
+
+        preg_match_all($this->regex, $text, $matches);
+
+        foreach ($matches[0] as $match) {
+            $bytes = EncoderUtil::toBytes($match);
+
+            if ($token = $this->getToken($match)) {
+                $tokens[] = $token;
+                continue;
+            }
+
+            $tokens = [...$tokens, ...$this->bpe($bytes)];
+        }
+
+        return $tokens;
+    }
+
     protected function bpe(array $bytes): array
     {
         $parts = $this->initializeParts($bytes);
