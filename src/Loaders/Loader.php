@@ -2,25 +2,17 @@
 
 namespace Rahul900day\Tiktoken\Loaders;
 
-use GuzzleHttp\Client;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Path;
+use Rahul900day\Tiktoken\Cache\FileSystemCache;
+use Rahul900day\Tiktoken\Contracts\CacheContract;
+use Rahul900day\Tiktoken\Contracts\ReaderContract;
 
 abstract class Loader
 {
-    protected Filesystem $filesystem;
+    protected CacheContract $cache;
 
-    public function __construct()
+    public function __construct(protected ReaderContract $reader, ?CacheContract $cache = null)
     {
-        $this->filesystem = new Filesystem();
-    }
-
-    public function readFile(string $blobPath): string
-    {
-        $client = new Client();
-        $res = $client->get($blobPath);
-
-        return $res->getBody()->getContents();
+        $this->cache = $cache ?? new FileSystemCache();
     }
 
     protected function checkHash(string $data, string $hash): bool
@@ -30,47 +22,29 @@ abstract class Loader
         return $actual_hash === $hash;
     }
 
-    protected function readFileCached(string $blobPath, ?string $expectedHash = null): string
+    protected function readFileCached(string $location, ?string $expectedHash = null): string
     {
-        $user_specified_cache = true;
-        if (getenv("TIKTOKEN_CACHE_DIR")) {
-            $cache_dir = Path::canonicalize(getenv("TIKTOKEN_CACHE_DIR"));
-        } elseif (getenv("DATA_GYM_CACHE_DIR")) {
-            $cache_dir = Path::canonicalize(getenv("DATA_GYM_CACHE_DIR"));
-        } else {
-            $cache_dir = Path::normalize(sys_get_temp_dir(). '/'. 'data-gym-cache');
-            $user_specified_cache = false;
-        }
+        // TODO: Add skip cache option
 
-        if ($cache_dir === "") {
-            return $this->readFile($blobPath);
-        }
+        $cacheKey = sha1($location);
 
-        $cache_key = sha1($blobPath);
-
-        $cache_path = Path::canonicalize("{$cache_dir}/{$cache_key}");
-
-        if ($this->filesystem->exists($cache_path)) {
-            $data = file_get_contents($cache_path);
+        if($this->cache->has($cacheKey)) {
+            $data = $this->cache->get($cacheKey);
 
             if (is_null($expectedHash) || $this->checkHash($data, $expectedHash)) {
                 return $data;
             }
 
-            // the cached file does not match the hash, remove it and re-fetch
-            $this->filesystem->remove($cache_path);
+            $this->cache->delete($cacheKey);
         }
 
-        $contents = $this->readFile($blobPath);
+        $contents = $this->reader->read($location);
 
         if($expectedHash && ! $this->checkHash($contents, $expectedHash)) {
-            throw new \Exception("Hash mismatch for data downloaded from {$blobPath} (expected {$expectedHash}). This may indicate a corrupted download. Please try again.");
+            throw new \Exception("Hash mismatch for data downloaded from {$location} (expected {$expectedHash}). This may indicate a corrupted download. Please try again.");
         }
 
-        $this->filesystem->mkdir($cache_dir);
-        $tmp_filename = $this->filesystem->tempnam($cache_dir, $cache_key, '.tmp');
-        file_put_contents($tmp_filename, $contents);
-        $this->filesystem->rename($tmp_filename, $cache_path);
+        $this->cache->set($cacheKey, $contents);
 
         return $contents;
     }

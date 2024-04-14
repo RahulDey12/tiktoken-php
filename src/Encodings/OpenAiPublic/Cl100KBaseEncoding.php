@@ -2,20 +2,20 @@
 
 namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 
-use Rahul900day\Tiktoken\Contracts\Encoding;
+use Rahul900day\Tiktoken\Contracts\EncodingContract;
 use Rahul900day\Tiktoken\Encoder;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Loaders\TiktokenLoader;
-use Rahul900day\Tiktoken\Utils\Loader;
+use Rahul900day\Tiktoken\Readers\HttpReader;
 use Rahul900day\Tiktoken\Vocab;
 
-final class Cl100kBaseEncoding implements Encoding
+final class Cl100KBaseEncoding implements EncodingContract
 {
     protected TiktokenLoader $loader;
 
     public function __construct()
     {
-        $this->loader = new TiktokenLoader();
+        $this->loader = new TiktokenLoader(HttpReader::create());
     }
 
     public function __invoke(): Encoder

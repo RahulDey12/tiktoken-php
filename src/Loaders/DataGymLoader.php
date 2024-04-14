@@ -2,6 +2,7 @@
 
 namespace Rahul900day\Tiktoken\Loaders;
 
+use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Utils\EncoderUtil;
 
 class DataGymLoader extends Loader
@@ -100,8 +101,8 @@ class DataGymLoader extends Loader
             $encoderJsonLoaded[$token] = $value;
         }
 
-        unset($encoderJsonLoaded['<|endoftext|>']);
-        unset($encoderJsonLoaded['<|startoftext|>']);
+        unset($encoderJsonLoaded[SpecialToken::ENDOFTEXT->value]);
+        unset($encoderJsonLoaded[SpecialToken::STARTOFTEXT->value]);
 
         return $encoderJsonLoaded;
     }

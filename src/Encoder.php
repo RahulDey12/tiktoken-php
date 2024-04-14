@@ -73,6 +73,17 @@ class Encoder
         return $this->bpe->encode($text, $allowedSpecial)[0];
     }
 
+    public function encodeBatch(array $texts, array|string $allowedSpecial = [], string $disallowedSpecial = 'all'): array
+    {
+        $result = [];
+
+        foreach ($texts as $text) {
+            $result[] = $this->encode($text, $allowedSpecial, $disallowedSpecial);
+        }
+
+        return $result;
+    }
+
     public function decode(array $tokens): string
     {
         $text = "";
@@ -82,6 +93,17 @@ class Encoder
         }
 
         return $text;
+    }
+
+    public function decodeBatch(array $batch): array
+    {
+        $texts = [];
+
+        foreach ($batch as $tokens) {
+            $texts[] = $this->decode($tokens);
+        }
+
+        return $texts;
     }
 
     protected function getSpecialTokensKeys(): array
@@ -94,7 +116,7 @@ class Encoder
         $parts = array_map('preg_quote', $specialTokens);
         $specialRegex = '/'. implode('|', $parts) .'/u';
 
-        if (false === preg_match($specialRegex, null)) {
+        if (false === @preg_match($specialRegex, '')) {
             throw new Exception("Invalid regex pattern: {$specialRegex}");
         }
 

@@ -22,12 +22,12 @@ class Bpe
         $parts = array_map('preg_quote', array_keys($specialTokens));
         $this->specialRegex = '/'. implode('|', $parts) .'/u';
 
-        if (false === preg_match($this->specialRegex, null)) {
+        if (false === @preg_match($this->specialRegex, '')) {
             throw new Exception("Invalid regex pattern: {$this->specialRegex}");
         }
     }
 
-    public function encode(string $text, array $allowedSpecial)
+    public function encode(string $text, array $allowedSpecial): array
     {
         $tokens = [];
 

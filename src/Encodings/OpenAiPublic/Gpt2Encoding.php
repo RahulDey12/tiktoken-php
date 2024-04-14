@@ -2,20 +2,20 @@
 
 namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 
-use Rahul900day\Tiktoken\Contracts\Encoding;
+use Rahul900day\Tiktoken\Contracts\EncodingContract;
 use Rahul900day\Tiktoken\Encoder;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Loaders\DataGymLoader;
-use Rahul900day\Tiktoken\Utils\Loader;
+use Rahul900day\Tiktoken\Readers\HttpReader;
 use Rahul900day\Tiktoken\Vocab;
 
-final class Gpt2Encoding implements Encoding
+final class Gpt2Encoding implements EncodingContract
 {
     protected DataGymLoader $loader;
 
     public function __construct()
     {
-        $this->loader = new DataGymLoader();
+        $this->loader = new DataGymLoader(HttpReader::create());
     }
 
     public function __invoke(): Encoder
