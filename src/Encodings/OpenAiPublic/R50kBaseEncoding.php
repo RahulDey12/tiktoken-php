@@ -5,21 +5,22 @@ namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 use Rahul900day\Tiktoken\Contracts\Encoding;
 use Rahul900day\Tiktoken\Encoder;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
+use Rahul900day\Tiktoken\Loaders\TiktokenLoader;
 use Rahul900day\Tiktoken\Utils\Loader;
 use Rahul900day\Tiktoken\Vocab;
 
 final class R50kBaseEncoding implements Encoding
 {
-    protected Loader $loader;
+    protected TiktokenLoader $loader;
 
     public function __construct()
     {
-        $this->loader = new Loader();
+        $this->loader = new TiktokenLoader();
     }
 
     public function __invoke(): Encoder
     {
-        $vocab = new Vocab($this->loader->loadTiktokenRanks(
+        $vocab = new Vocab($this->loader->load(
             "https://openaipublic.blob.core.windows.net/encodings/r50k_base.tiktoken",
             "306cd27f03c1a714eca7108e03d66b7dc042abe8c258b44c199a7ed9838dd930",
         ));

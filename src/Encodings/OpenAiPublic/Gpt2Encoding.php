@@ -5,21 +5,22 @@ namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 use Rahul900day\Tiktoken\Contracts\Encoding;
 use Rahul900day\Tiktoken\Encoder;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
+use Rahul900day\Tiktoken\Loaders\DataGymLoader;
 use Rahul900day\Tiktoken\Utils\Loader;
 use Rahul900day\Tiktoken\Vocab;
 
 final class Gpt2Encoding implements Encoding
 {
-    protected Loader $loader;
+    protected DataGymLoader $loader;
 
     public function __construct()
     {
-        $this->loader = new Loader();
+        $this->loader = new DataGymLoader();
     }
 
     public function __invoke(): Encoder
     {
-        $vocab = new Vocab($this->loader->loadDataGymRanks(
+        $vocab = new Vocab($this->loader->load(
             "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
             "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
             "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5",
