@@ -7,7 +7,7 @@ namespace Rahul900day\Tiktoken\Loaders;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Utils\EncoderUtil;
 
-class DataGymLoader extends Loader
+final class DataGymLoader extends Loader
 {
     public function load(
         string $vocabBpeFile,
@@ -38,12 +38,12 @@ class DataGymLoader extends Loader
         return $bpeRanks;
     }
 
-    protected function createByteRange(string $startChar, string $endChar): array
+    private function createByteRange(string $startChar, string $endChar): array
     {
         return range(mb_ord($startChar), mb_ord($endChar));
     }
 
-    protected function byteToCharMap(array $byteArray): array
+    private function byteToCharMap(array $byteArray): array
     {
         $byteToCharMap = [];
 
@@ -54,7 +54,7 @@ class DataGymLoader extends Loader
         return $byteToCharMap;
     }
 
-    protected function addBytesNotInRank(array &$rankToIntByte, array &$dataGymByteToByteMap): void
+    private function addBytesNotInRank(array &$rankToIntByte, array &$dataGymByteToByteMap): void
     {
         $unicodeCounter = 0;
 
@@ -70,12 +70,12 @@ class DataGymLoader extends Loader
         }
     }
 
-    protected function createBpeMerges(string $vocabBpeContents): array
+    private function createBpeMerges(string $vocabBpeContents): array
     {
         return array_map(fn ($mergeStr): array => explode(' ', $mergeStr), array_slice(explode("\n", $vocabBpeContents), 1, -1));
     }
 
-    protected function createBpeRanks(array $rankToIntByte): array
+    private function createBpeRanks(array $rankToIntByte): array
     {
         $bpeRanks = [];
         foreach ($rankToIntByte as $i => $byte) {
@@ -85,7 +85,7 @@ class DataGymLoader extends Loader
         return $bpeRanks;
     }
 
-    protected function addMergeRanksToBpe(array $bpeMerges, array &$bpeRanks, array $dataGymByteToByteMap): void
+    private function addMergeRanksToBpe(array $bpeMerges, array &$bpeRanks, array $dataGymByteToByteMap): void
     {
         foreach ($bpeMerges as [$first, $second]) {
 
@@ -99,7 +99,7 @@ class DataGymLoader extends Loader
         }
     }
 
-    protected function loadEncoderJson(string $encoderJsonFile, ?string $encoderJsonHash, array $dataGymByteToByteMap): array
+    private function loadEncoderJson(string $encoderJsonFile, ?string $encoderJsonHash, array $dataGymByteToByteMap): array
     {
         $encoderJson = json_decode($this->readFileCached($encoderJsonFile, $encoderJsonHash), true);
         $encoderJsonLoaded = [];
@@ -114,14 +114,14 @@ class DataGymLoader extends Loader
         return $encoderJsonLoaded;
     }
 
-    protected function validateBpeAndEncoderJsonRanks(array $bpeRanks, array $encoderJson): void
+    private function validateBpeAndEncoderJsonRanks(array $bpeRanks, array $encoderJson): void
     {
         if ($bpeRanks !== $encoderJson) {
             throw new \Exception("BPE Ranks & Encoder JSON Ranks Doesn't Match");
         }
     }
 
-    protected function decodeDataGym(string|int $value, array $dataGymByteToByte): array
+    private function decodeDataGym(string|int $value, array $dataGymByteToByte): array
     {
         $bytes = [];
         $value = strval($value);

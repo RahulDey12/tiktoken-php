@@ -13,7 +13,7 @@ use Rahul900day\Tiktoken\Vocab;
 
 final class Gpt2Encoding implements EncodingContract
 {
-    protected DataGymLoader $loader;
+    private DataGymLoader $loader;
 
     public function __construct()
     {

@@ -8,14 +8,14 @@ use Exception;
 
 final class ArrayUtil
 {
-    public static function &getNthItem(array &$array, $nth): mixed
+    public static function &nthItem(array &$array, int $nth): mixed
     {
         $key = array_keys($array)[$nth];
 
         return $array[$key];
     }
 
-    public static function unsetNthItem(array &$array, $nth): void
+    public static function unsetNthItem(array &$array, int $nth): void
     {
         $key = array_keys($array)[$nth];
 

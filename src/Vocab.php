@@ -6,7 +6,7 @@ namespace Rahul900day\Tiktoken;
 
 use Countable;
 
-class Vocab implements Countable
+final class Vocab implements Countable
 {
     public readonly array $rankToTokens;
 

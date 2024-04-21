@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Loaders;
 
-class TiktokenLoader extends Loader
+final class TiktokenLoader extends Loader
 {
     public function load(string $bpeFile, ?string $expectedHash = null): array
     {

@@ -5,26 +5,22 @@ declare(strict_types=1);
 namespace Rahul900day\Tiktoken;
 
 use Exception;
+use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Utils\ArrayUtil;
 use Rahul900day\Tiktoken\Utils\EncoderUtil;
 
-class Bpe
+final class Bpe
 {
     public const MAX_INT = PHP_INT_MAX;
 
-    protected string $specialRegex;
+    private string $specialRegex;
 
     public function __construct(
-        protected Vocab $vocab,
-        protected array $specialTokens,
-        protected string $regex,
+        private readonly Vocab $vocab,
+        private readonly array $specialTokens,
+        private readonly string $regex,
     ) {
-        $parts = array_map('preg_quote', array_keys($specialTokens));
-        $this->specialRegex = '/'.implode('|', $parts).'/u';
-
-        if (@preg_match($this->specialRegex, '') === false) {
-            throw new Exception("Invalid regex pattern: {$this->specialRegex}");
-        }
+        $this->specialRegex = SpecialToken::getRegex(array_keys($specialTokens));
     }
 
     public function encode(string $text, array $allowedSpecial): array
@@ -112,7 +108,7 @@ class Bpe
         return $tokens;
     }
 
-    protected function bpe(array $bytes): array
+    private function bpe(array $bytes): array
     {
         $parts = $this->initializeParts($bytes);
         $minRank = $this->getMinRank($parts);
@@ -121,10 +117,10 @@ class Bpe
             $partIndex = $minRank[1];
 
             if ($partIndex > 0) {
-                ArrayUtil::getNthItem($parts, $partIndex - 1)[1] = $this->getRank($bytes, $parts, $partIndex - 1);
+                ArrayUtil::nthItem($parts, $partIndex - 1)[1] = $this->getRank($bytes, $parts, $partIndex - 1);
             }
 
-            ArrayUtil::getNthItem($parts, $partIndex)[1] = $this->getRank($bytes, $parts, $partIndex);
+            ArrayUtil::nthItem($parts, $partIndex)[1] = $this->getRank($bytes, $parts, $partIndex);
             ArrayUtil::unsetNthItem($parts, $partIndex + 1);
 
             $minRank = $this->getMinRank(ArrayUtil::getSegment($parts, 0, count($parts) - 1));
@@ -138,7 +134,7 @@ class Bpe
         }, $this->getPairs($parts));
     }
 
-    protected function initializeParts(array $bytes): array
+    private function initializeParts(array $bytes): array
     {
         $parts = [];
 
@@ -155,7 +151,7 @@ class Bpe
         return $parts;
     }
 
-    protected function getMinRank(array $parts): array
+    private function getMinRank(array $parts): array
     {
         $minRank = [self::MAX_INT, self::MAX_INT];
 
@@ -168,19 +164,19 @@ class Bpe
         return $minRank;
     }
 
-    protected function getRank(array $bytes, array $parts, int $startIndex): int
+    private function getRank(array $bytes, array $parts, int $startIndex): int
     {
         if ($startIndex + 3 >= count($parts)) {
             return self::MAX_INT;
         }
 
-        $start = ArrayUtil::getNthItem($parts, $startIndex)[0];
-        $stop = ArrayUtil::getNthItem($parts, $startIndex + 3)[0];
+        $start = ArrayUtil::nthItem($parts, $startIndex)[0];
+        $stop = ArrayUtil::nthItem($parts, $startIndex + 3)[0];
 
         return $this->getToken(ArrayUtil::getSegment($bytes, $start, $stop)) ?? self::MAX_INT;
     }
 
-    protected function getPairs(array $parts): array
+    private function getPairs(array $parts): array
     {
         $pairs = [];
         $previousPart = array_shift($parts);
@@ -193,7 +189,7 @@ class Bpe
         return $pairs;
     }
 
-    protected function getToken(array|string $bytes): ?int
+    private function getToken(array|string $bytes): ?int
     {
         if (is_array($bytes)) {
             $bytes = EncoderUtil::fromBytes($bytes);

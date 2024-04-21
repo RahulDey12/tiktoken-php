@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken;
 
-use Exception;
-use Rahul900day\Tiktoken\Exceptions\InvalidPatternException;
+use Rahul900day\Tiktoken\Enums\SpecialToken;
+use Rahul900day\Tiktoken\Exceptions\SpecialTokenNotAllowedException;
 
-class Encoder
+final class Encoder
 {
-    protected int $maxTokenValue;
+    private int $maxTokenValue;
 
-    protected Bpe $bpe;
+    private Bpe $bpe;
 
     public function __construct(
-        protected string $name,
-        protected string $pattern,
-        protected Vocab $vocab,
-        protected array $specialTokens,
+        public readonly string $name,
+        private readonly string $pattern,
+        private readonly Vocab $vocab,
+        private readonly array $specialTokens,
         ?int $vocabLength = null,
     ) {
         $this->maxTokenValue = max(
@@ -65,10 +65,10 @@ class Encoder
         }
 
         if (count($disallowedSpecial) > 0) {
-            preg_match($this->getSpecialTokenRegex($disallowedSpecial), $text, $matches);
+            preg_match(SpecialToken::getRegex($disallowedSpecial), $text, $matches);
 
             if (isset($matches[0])) {
-                throw new Exception("The text contains a special token that is not allowed: {$matches[0]}");
+                throw new SpecialTokenNotAllowedException($matches[0]);
             }
         }
 
@@ -108,20 +108,8 @@ class Encoder
         return $texts;
     }
 
-    protected function getSpecialTokensKeys(): array
+    private function getSpecialTokensKeys(): array
     {
         return array_keys($this->specialTokens);
-    }
-
-    protected function getSpecialTokenRegex($specialTokens): string
-    {
-        $parts = array_map('preg_quote', $specialTokens);
-        $specialRegex = '/'.implode('|', $parts).'/u';
-
-        if (@preg_match($specialRegex, '') === false) {
-            throw new InvalidPatternException($specialRegex);
-        }
-
-        return $specialRegex;
     }
 }

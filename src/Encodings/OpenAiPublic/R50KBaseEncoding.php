@@ -13,7 +13,7 @@ use Rahul900day\Tiktoken\Vocab;
 
 final class R50KBaseEncoding implements EncodingContract
 {
-    protected TiktokenLoader $loader;
+    private TiktokenLoader $loader;
 
     public function __construct()
     {
