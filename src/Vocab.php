@@ -22,7 +22,7 @@ class Vocab implements Countable
 
     public function getToken(int $rank): string
     {
-        return  $this->rankToTokens[$rank] ?? throw new \Exception("Unable to find rank: [{$rank}]");
+        return $this->rankToTokens[$rank] ?? throw new \Exception("Unable to find rank: [{$rank}]");
     }
 
     public function count(): int

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 
 use Rahul900day\Tiktoken\Contracts\EncodingContract;
@@ -21,10 +23,10 @@ final class Gpt2Encoding implements EncodingContract
     public function __invoke(): Encoder
     {
         $vocab = new Vocab($this->loader->load(
-            "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
-            "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
-            "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5",
-            "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783",
+            'https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe',
+            'https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json',
+            '1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5',
+            '196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783',
         ));
 
         return new Encoder(

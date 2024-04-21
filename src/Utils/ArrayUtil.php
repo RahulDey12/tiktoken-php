@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Tiktoken\Utils;
 
 use Exception;
 
-class ArrayUtil
+final class ArrayUtil
 {
-
-    public static function &getNthItem(&$array, $nth): mixed
+    public static function &getNthItem(array &$array, $nth): mixed
     {
         $key = array_keys($array)[$nth];
 
         return $array[$key];
     }
 
-    public static function unsetNthItem(&$array, $nth): void
+    public static function unsetNthItem(array &$array, $nth): void
     {
         $key = array_keys($array)[$nth];
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Tiktoken\Loaders;
 
 use Rahul900day\Tiktoken\Enums\SpecialToken;
@@ -12,8 +14,7 @@ class DataGymLoader extends Loader
         string $encoderJsonFile,
         ?string $vocabBpeHash = null,
         ?string $encoderJsonHash = null
-    ): array
-    {
+    ): array {
         $asciiByteRange = $this->createByteRange('!', '~');
         $latinByteRange = $this->createByteRange('¡', '¬');
         $extendedLatinByteRange = $this->createByteRange('®', 'ÿ');
@@ -37,11 +38,13 @@ class DataGymLoader extends Loader
         return $bpeRanks;
     }
 
-    protected function createByteRange(string $startChar, string $endChar): array {
+    protected function createByteRange(string $startChar, string $endChar): array
+    {
         return range(mb_ord($startChar), mb_ord($endChar));
     }
 
-    protected function byteToCharMap(array $byteArray): array {
+    protected function byteToCharMap(array $byteArray): array
+    {
         $byteToCharMap = [];
 
         foreach ($byteArray as $byte) {
@@ -51,41 +54,44 @@ class DataGymLoader extends Loader
         return $byteToCharMap;
     }
 
-    protected function addBytesNotInRank(array &$rankToIntByte, array &$dataGymByteToByteMap): void {
+    protected function addBytesNotInRank(array &$rankToIntByte, array &$dataGymByteToByteMap): void
+    {
         $unicodeCounter = 0;
 
-        foreach(range(0, 255) as $byte) {
+        foreach (range(0, 255) as $byte) {
             if (in_array($byte, $rankToIntByte)) {
                 continue;
             }
 
             $rankToIntByte[] = $byte;
-            $dataGymByteToByteMap[mb_chr(2**8 + $unicodeCounter)] = $byte;
+            $dataGymByteToByteMap[mb_chr(2 ** 8 + $unicodeCounter)] = $byte;
 
             $unicodeCounter++;
         }
     }
 
-    protected function createBpeMerges(string $vocabBpeContents): array {
-        return array_map(function($mergeStr) {
-            return explode(" ", $mergeStr);
-        }, array_slice(explode("\n", $vocabBpeContents), 1, -1));
+    protected function createBpeMerges(string $vocabBpeContents): array
+    {
+        return array_map(fn ($mergeStr): array => explode(' ', $mergeStr), array_slice(explode("\n", $vocabBpeContents), 1, -1));
     }
 
-    protected function createBpeRanks(array $rankToIntByte): array {
+    protected function createBpeRanks(array $rankToIntByte): array
+    {
         $bpeRanks = [];
         foreach ($rankToIntByte as $i => $byte) {
             $bpeRanks[EncoderUtil::fromBytes([$byte])] = $i;
         }
+
         return $bpeRanks;
     }
 
-    protected function addMergeRanksToBpe(array $bpeMerges, array &$bpeRanks, array $dataGymByteToByteMap): void {
+    protected function addMergeRanksToBpe(array $bpeMerges, array &$bpeRanks, array $dataGymByteToByteMap): void
+    {
         foreach ($bpeMerges as [$first, $second]) {
 
             $tokenBytes = [
                 ...$this->decodeDataGym($first, $dataGymByteToByteMap),
-                ...$this->decodeDataGym($second, $dataGymByteToByteMap)
+                ...$this->decodeDataGym($second, $dataGymByteToByteMap),
             ];
             $token = EncoderUtil::fromBytes($tokenBytes);
 
@@ -93,7 +99,8 @@ class DataGymLoader extends Loader
         }
     }
 
-    protected function loadEncoderJson(string $encoderJsonFile, ?string $encoderJsonHash, array $dataGymByteToByteMap): array {
+    protected function loadEncoderJson(string $encoderJsonFile, ?string $encoderJsonHash, array $dataGymByteToByteMap): array
+    {
         $encoderJson = json_decode($this->readFileCached($encoderJsonFile, $encoderJsonHash), true);
         $encoderJsonLoaded = [];
         foreach ($encoderJson as $key => $value) {
@@ -107,8 +114,9 @@ class DataGymLoader extends Loader
         return $encoderJsonLoaded;
     }
 
-    protected function validateBpeAndEncoderJsonRanks(array $bpeRanks, array $encoderJson): void {
-        if($bpeRanks !== $encoderJson) {
+    protected function validateBpeAndEncoderJsonRanks(array $bpeRanks, array $encoderJson): void
+    {
+        if ($bpeRanks !== $encoderJson) {
             throw new \Exception("BPE Ranks & Encoder JSON Ranks Doesn't Match");
         }
     }

@@ -24,6 +24,8 @@
     "prefer-stable": true,
     "require-dev": {
         "symfony/var-dumper": "6.4.x-dev",
-        "phpbench/phpbench": "1.2.x-dev"
+        "phpbench/phpbench": "1.2.x-dev",
+        "rector/rector": "^1.0",
+        "laravel/pint": "^1.15"
     }
 }

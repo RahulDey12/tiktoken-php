@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Tiktoken\Loaders;
 
 use Rahul900day\Tiktoken\Cache\FileSystemCache;
@@ -28,7 +30,7 @@ abstract class Loader
 
         $cacheKey = sha1($location);
 
-        if($this->cache->has($cacheKey)) {
+        if ($this->cache->has($cacheKey)) {
             $data = $this->cache->get($cacheKey);
 
             if (is_null($expectedHash) || $this->checkHash($data, $expectedHash)) {
@@ -40,7 +42,7 @@ abstract class Loader
 
         $contents = $this->reader->read($location);
 
-        if($expectedHash && ! $this->checkHash($contents, $expectedHash)) {
+        if ($expectedHash && ! $this->checkHash($contents, $expectedHash)) {
             throw new \Exception("Hash mismatch for data downloaded from {$location} (expected {$expectedHash}). This may indicate a corrupted download. Please try again.");
         }
 

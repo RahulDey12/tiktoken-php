@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Tiktoken;
 
 use Exception;
-use Spatie\Async\Pool;
+use Rahul900day\Tiktoken\Exceptions\InvalidPatternException;
 
 class Encoder
 {
@@ -17,19 +19,19 @@ class Encoder
         protected Vocab $vocab,
         protected array $specialTokens,
         ?int $vocabLength = null,
-    ){
+    ) {
         $this->maxTokenValue = max(
             max(array_values($this->vocab->tokenToRanks)),
             max(0, ...array_values($this->specialTokens)),
         );
 
-        if($vocabLength) {
-            if(count($this->vocab->tokenToRanks) + count($this->specialTokens) !== $vocabLength) {
-                throw new \Exception("Vocab length doesnt match with the actual length of tokens.");
+        if ($vocabLength) {
+            if (count($this->vocab->tokenToRanks) + count($this->specialTokens) !== $vocabLength) {
+                throw new \Exception('Vocab length doesnt match with the actual length of tokens.');
             }
 
-            if($this->maxTokenValue !== $vocabLength - 1) {
-                throw new \Exception("Incorrect vocab length.");
+            if ($this->maxTokenValue !== $vocabLength - 1) {
+                throw new \Exception('Incorrect vocab length.');
             }
         }
 
@@ -54,18 +56,18 @@ class Encoder
 
     public function encode(string $text, array|string $allowedSpecial = [], string $disallowedSpecial = 'all'): array
     {
-        if($allowedSpecial === 'all') {
+        if ($allowedSpecial === 'all') {
             $allowedSpecial = $this->getSpecialTokensKeys();
         }
 
-        if($disallowedSpecial === 'all') {
+        if ($disallowedSpecial === 'all') {
             $disallowedSpecial = array_diff($this->getSpecialTokensKeys(), $allowedSpecial);
         }
 
-        if(count($disallowedSpecial) > 0) {
+        if (count($disallowedSpecial) > 0) {
             preg_match($this->getSpecialTokenRegex($disallowedSpecial), $text, $matches);
 
-            if(isset($matches[0])) {
+            if (isset($matches[0])) {
                 throw new Exception("The text contains a special token that is not allowed: {$matches[0]}");
             }
         }
@@ -86,7 +88,7 @@ class Encoder
 
     public function decode(array $tokens): string
     {
-        $text = "";
+        $text = '';
 
         foreach ($tokens as $token) {
             $text .= $this->vocab->getToken($token);
@@ -111,13 +113,13 @@ class Encoder
         return array_keys($this->specialTokens);
     }
 
-    protected function getSpecialTokenRegex($specialTokens)
+    protected function getSpecialTokenRegex($specialTokens): string
     {
         $parts = array_map('preg_quote', $specialTokens);
-        $specialRegex = '/'. implode('|', $parts) .'/u';
+        $specialRegex = '/'.implode('|', $parts).'/u';
 
-        if (false === @preg_match($specialRegex, '')) {
-            throw new Exception("Invalid regex pattern: {$specialRegex}");
+        if (@preg_match($specialRegex, '') === false) {
+            throw new InvalidPatternException($specialRegex);
         }
 
         return $specialRegex;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 
 use Rahul900day\Tiktoken\Contracts\EncodingContract;
@@ -21,8 +23,8 @@ final class R50KBaseEncoding implements EncodingContract
     public function __invoke(): Encoder
     {
         $vocab = new Vocab($this->loader->load(
-            "https://openaipublic.blob.core.windows.net/encodings/r50k_base.tiktoken",
-            "306cd27f03c1a714eca7108e03d66b7dc042abe8c258b44c199a7ed9838dd930",
+            'https://openaipublic.blob.core.windows.net/encodings/r50k_base.tiktoken',
+            '306cd27f03c1a714eca7108e03d66b7dc042abe8c258b44c199a7ed9838dd930',
         ));
 
         return new Encoder(

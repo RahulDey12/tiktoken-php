@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Tiktoken\Cache;
 
 use Rahul900day\Tiktoken\Contracts\CacheContract;
@@ -28,7 +30,7 @@ class FileSystemCache implements CacheContract
 
     public function set(string $key, mixed $value): void
     {
-        $this->cache->get($key, fn() => $value);
+        $this->cache->get($key, fn (): mixed => $value);
     }
 
     public function delete(string $key): bool
@@ -48,10 +50,11 @@ class FileSystemCache implements CacheContract
 
     protected function getDefaultCacheDirectory(): string
     {
-        if (getenv("TIKTOKEN_CACHE_DIR")) {
-            return Path::canonicalize(getenv("TIKTOKEN_CACHE_DIR"));
-        } elseif (getenv("DATA_GYM_CACHE_DIR")) {
-            return Path::canonicalize(getenv("DATA_GYM_CACHE_DIR"));
+        if (getenv('TIKTOKEN_CACHE_DIR')) {
+            return Path::canonicalize(getenv('TIKTOKEN_CACHE_DIR'));
+        }
+        if (getenv('DATA_GYM_CACHE_DIR')) {
+            return Path::canonicalize(getenv('DATA_GYM_CACHE_DIR'));
         }
 
         return Path::normalize(sys_get_temp_dir());

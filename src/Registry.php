@@ -36,7 +36,7 @@ class Registry
     {
         // Register default encodings before register any custom
         // encoding. This is how we can add replacement capabilities.
-        if(count(self::$encodings) === 0) {
+        if (self::$encodings === []) {
             self::loadDefaultEncodings();
         }
 
@@ -45,23 +45,23 @@ class Registry
 
     public static function getEncoding(string $name): Encoder
     {
-        if(array_key_exists($name, self::$resolvedEncodings)) {
+        if (array_key_exists($name, self::$resolvedEncodings)) {
             return self::$resolvedEncodings[$name];
         }
 
-        if(count(self::$encodings) === 0) {
+        if (self::$encodings === []) {
             self::loadDefaultEncodings();
         }
 
-        if(! array_key_exists($name, self::$encodings)) {
+        if (! array_key_exists($name, self::$encodings)) {
             throw new Exception("Unknown encoding {$name}.");
         }
 
         $callable = self::$encodings[$name];
         $encoding = $callable();
 
-        if(! $encoding instanceof Encoder) {
-            throw new Exception("EncodingContract {$name} must return " . Encoder::class);
+        if (! $encoding instanceof Encoder) {
+            throw new Exception("EncodingContract {$name} must return ".Encoder::class);
         }
 
         self::$resolvedEncodings[$name] = $encoding;
@@ -71,7 +71,7 @@ class Registry
 
     protected static function loadDefaultEncodings(): void
     {
-        foreach(self::$defaultEncodings as $name => $encoding) {
+        foreach (self::$defaultEncodings as $name => $encoding) {
             [$class, $params] = $encoding;
 
             $encoder = new $class(...$params);

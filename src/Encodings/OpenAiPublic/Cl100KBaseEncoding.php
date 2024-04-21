@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 
 use Rahul900day\Tiktoken\Contracts\EncodingContract;
@@ -21,8 +23,8 @@ final class Cl100KBaseEncoding implements EncodingContract
     public function __invoke(): Encoder
     {
         $vocab = new Vocab($this->loader->load(
-            "https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken",
-            "223921b76ee99bde995b7ff738513eef100fb51d18c93597a113bcffe865b2a7",
+            'https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken',
+            '223921b76ee99bde995b7ff738513eef100fb51d18c93597a113bcffe865b2a7',
         ));
 
         return new Encoder(

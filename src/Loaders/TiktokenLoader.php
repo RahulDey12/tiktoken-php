@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rahul900day\Tiktoken\Loaders;
 
 class TiktokenLoader extends Loader
@@ -10,7 +12,7 @@ class TiktokenLoader extends Loader
         $result = [];
 
         foreach (explode("\n", $contents) as $line) {
-            if(! $line) {
+            if ($line === '') {
                 continue;
             }
 
