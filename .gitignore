@@ -1,2 +1,4 @@
-.idea/
-vendor/
+/.phpunit.cache
+/.coverage
+/.idea
+/vendor

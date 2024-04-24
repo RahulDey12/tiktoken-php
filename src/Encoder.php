@@ -7,17 +7,17 @@ namespace Rahul900day\Tiktoken;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Exceptions\SpecialTokenNotAllowedException;
 
-final class Encoder
+class Encoder
 {
-    private int $maxTokenValue;
+    protected int $maxTokenValue;
 
-    private Bpe $bpe;
+    protected Bpe $bpe;
 
     public function __construct(
         public readonly string $name,
-        private readonly string $pattern,
-        private readonly Vocab $vocab,
-        private readonly array $specialTokens,
+        protected readonly string $pattern,
+        protected readonly Vocab $vocab,
+        protected readonly array $specialTokens,
         ?int $vocabLength = null,
     ) {
         $this->maxTokenValue = max(
@@ -108,7 +108,7 @@ final class Encoder
         return $texts;
     }
 
-    private function getSpecialTokensKeys(): array
+    protected function getSpecialTokensKeys(): array
     {
         return array_keys($this->specialTokens);
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken;
 
+use Rahul900day\Tiktoken\Exceptions\InvalidModelNameException;
+
 class Tiktoken
 {
     // [NOTE]: copied from https://github.com/openai/tiktoken/blob/main/tiktoken/model.py needs update regularly.
@@ -94,6 +96,6 @@ class Tiktoken
             }
         }
 
-        throw new \Exception("Could not automatically map {$model} to a tokenizer.");
+        throw new InvalidModelNameException($model);
     }
 }

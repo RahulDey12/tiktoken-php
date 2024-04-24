@@ -11,9 +11,9 @@ use Rahul900day\Tiktoken\Loaders\TiktokenLoader;
 use Rahul900day\Tiktoken\Readers\HttpReader;
 use Rahul900day\Tiktoken\Vocab;
 
-final class P50KBaseEncoding implements EncodingContract
+class P50KBaseEncoding implements EncodingContract
 {
-    private TiktokenLoader $loader;
+    protected TiktokenLoader $loader;
 
     public function __construct()
     {

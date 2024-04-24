@@ -11,9 +11,9 @@ use Rahul900day\Tiktoken\Loaders\DataGymLoader;
 use Rahul900day\Tiktoken\Readers\HttpReader;
 use Rahul900day\Tiktoken\Vocab;
 
-final class Gpt2Encoding implements EncodingContract
+class Gpt2Encoding implements EncodingContract
 {
-    private DataGymLoader $loader;
+    protected DataGymLoader $loader;
 
     public function __construct()
     {

@@ -12,6 +12,7 @@ use Rahul900day\Tiktoken\Encodings\OpenAiPublic\Gpt2Encoding;
 use Rahul900day\Tiktoken\Encodings\OpenAiPublic\P50KBaseEncoding;
 use Rahul900day\Tiktoken\Encodings\OpenAiPublic\P50KEditEncoding;
 use Rahul900day\Tiktoken\Encodings\OpenAiPublic\R50KBaseEncoding;
+use Rahul900day\Tiktoken\Exceptions\InvalidEncodingException;
 
 class Registry
 {
@@ -29,6 +30,10 @@ class Registry
 
     protected static function registerEncoding(string $name, EncodingContract|Closure $encoding): void
     {
+        if(isset(self::$resolvedEncodings[$name])) {
+            unset(self::$resolvedEncodings[$name]);
+        }
+
         self::$encodings[$name] = $encoding;
     }
 
@@ -54,7 +59,7 @@ class Registry
         }
 
         if (! array_key_exists($name, self::$encodings)) {
-            throw new Exception("Unknown encoding {$name}.");
+            throw new InvalidEncodingException($name);
         }
 
         $callable = self::$encodings[$name];
