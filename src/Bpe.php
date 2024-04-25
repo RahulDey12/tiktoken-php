@@ -25,7 +25,7 @@ final class Bpe
 
     public function encode(string $text, array $allowedSpecial): array
     {
-        $tokens = [];
+        $ranks = [];
 
         $start = 0;
         $last_piece_token_len = 0;
@@ -33,7 +33,7 @@ final class Bpe
             $start_find = $start;
             $next_special = null;
             while (true) {
-                // Find the next allowed special token, if any
+                // Find the next allowed special rank, if any
                 if (preg_match($this->specialRegex, mb_substr($text, $start_find), $matches, PREG_OFFSET_CAPTURE)) {
                     /** @var array $next_special */
                     $next_special = $matches[0];
@@ -56,25 +56,25 @@ final class Bpe
                 foreach ($matches[0] as $match) {
                     $bytes = EncoderUtil::toBytes($match);
 
-                    if ($token = $this->getToken($match)) {
+                    if ($rank = $this->getRank($match)) {
                         $last_piece_token_len = 1;
-                        $tokens[] = $token;
+                        $ranks[] = $rank;
 
                         continue;
                     }
 
                     $encodedTokens = $this->bpe($bytes);
-                    $tokens = [...$tokens, ...$encodedTokens];
+                    $ranks = [...$ranks, ...$encodedTokens];
 
                     $last_piece_token_len = count($encodedTokens);
                 }
             }
 
             if ($next_special) {
-                // And here we push the special token
+                // And here we push the special rank
                 $piece = $next_special[0];
-                $token = $this->specialTokens[$piece];
-                $tokens[] = $token;
+                $rank = $this->specialTokens[$piece];
+                $ranks[] = $rank;
                 $start = $next_special[1] + strlen((string) $next_special[0]);
                 $last_piece_token_len = 0;
             } else {
@@ -82,65 +82,65 @@ final class Bpe
             }
         }
 
-        // last_piece_token_len is how many tokens came from the last regex split. This is used
-        // for determining unstable tokens, since you can't merge across (stable) regex splits
-        return [$tokens, $last_piece_token_len];
+        // last_piece_token_len is how many ranks came from the last regex split. This is used
+        // for determining unstable ranks, since you can't merge across (stable) regex splits
+        return [$ranks, $last_piece_token_len];
     }
 
     public function encodeOrdinary(string $text): array
     {
-        $tokens = [];
+        $ranks = [];
 
         preg_match_all($this->regex, $text, $matches);
 
         foreach ($matches[0] as $match) {
             $bytes = EncoderUtil::toBytes($match);
 
-            if ($token = $this->getToken($match)) {
-                $tokens[] = $token;
+            if ($rank = $this->getRank($match)) {
+                $ranks[] = $rank;
 
                 continue;
             }
 
-            $tokens = [...$tokens, ...$this->bpe($bytes)];
+            $ranks = [...$ranks, ...$this->bpe($bytes)];
         }
 
-        return $tokens;
+        return $ranks;
     }
 
     private function bpe(array $bytes): array
     {
-        $parts = $this->initializeParts($bytes);
-        $minRank = $this->getMinRank($parts);
+        $bytePairs = $this->initializePairs($bytes);
+        $minRank = $this->getMinRankPair($bytePairs);
 
         while ($minRank[0] !== self::MAX_INT) {
-            $partIndex = $minRank[1];
+            $index = $minRank[1];
 
-            if ($partIndex > 0) {
-                ArrayUtil::nthItem($parts, $partIndex - 1)[1] = $this->getRank($bytes, $parts, $partIndex - 1);
+            if ($index > 0) {
+                ArrayUtil::nthItem($bytePairs, $index - 1)[1] = $this->calculateMergedRank($bytes, $bytePairs, $index - 1);
             }
 
-            ArrayUtil::nthItem($parts, $partIndex)[1] = $this->getRank($bytes, $parts, $partIndex);
-            ArrayUtil::unsetNthItem($parts, $partIndex + 1);
+            ArrayUtil::nthItem($bytePairs, $index)[1] = $this->calculateMergedRank($bytes, $bytePairs, $index);
+            ArrayUtil::unsetNthItem($bytePairs, $index + 1);
 
-            $minRank = $this->getMinRank(ArrayUtil::getSegment($parts, 0, count($parts) - 1));
+            $minRank = $this->getMinRankPair(ArrayUtil::getSegment($bytePairs, 0, count($bytePairs) - 1));
         }
 
         return array_map(function ($pair) use ($bytes): int {
             $pairs = ArrayUtil::getSegment($bytes, $pair[0][0], $pair[1][0]);
 
-            return $this->getToken($pairs) ?? throw new Exception('Token cannot be found for: '.implode(',', $pairs));
+            return $this->getRank($pairs) ?? throw new Exception('Token cannot be found for: '.implode(',', $pairs));
 
-        }, $this->getPairs($parts));
+        }, $this->getAllPairs($bytePairs));
     }
 
-    private function initializeParts(array $bytes): array
+    private function initializePairs(array $bytes): array
     {
         $parts = [];
 
         foreach (range(0, count($bytes) - 2) as $index) {
             $segment = ArrayUtil::getSegment($bytes, $index, $index + 2);
-            $rank = $this->getToken($segment) ?? self::MAX_INT;
+            $rank = $this->getRank($segment) ?? self::MAX_INT;
 
             $parts[] = [$index, $rank];
         }
@@ -151,7 +151,7 @@ final class Bpe
         return $parts;
     }
 
-    private function getMinRank(array $parts): array
+    private function getMinRankPair(array $parts): array
     {
         $minRank = [self::MAX_INT, self::MAX_INT];
 
@@ -164,7 +164,7 @@ final class Bpe
         return $minRank;
     }
 
-    private function getRank(array $bytes, array $parts, int $startIndex): int
+    private function calculateMergedRank(array $bytes, array $parts, int $startIndex): int
     {
         if ($startIndex + 3 >= count($parts)) {
             return self::MAX_INT;
@@ -173,10 +173,10 @@ final class Bpe
         $start = ArrayUtil::nthItem($parts, $startIndex)[0];
         $stop = ArrayUtil::nthItem($parts, $startIndex + 3)[0];
 
-        return $this->getToken(ArrayUtil::getSegment($bytes, $start, $stop)) ?? self::MAX_INT;
+        return $this->getRank(ArrayUtil::getSegment($bytes, $start, $stop)) ?? self::MAX_INT;
     }
 
-    private function getPairs(array $parts): array
+    private function getAllPairs(array $parts): array
     {
         $pairs = [];
         $previousPart = array_shift($parts);
@@ -189,7 +189,7 @@ final class Bpe
         return $pairs;
     }
 
-    private function getToken(array|string $bytes): ?int
+    private function getRank(array|string $bytes): ?int
     {
         if (is_array($bytes)) {
             $bytes = EncoderUtil::fromBytes($bytes);

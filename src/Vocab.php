@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rahul900day\Tiktoken;
 
 use Countable;
+use Rahul900day\Tiktoken\Exceptions\RankNotFoundException;
 
 final class Vocab implements Countable
 {
@@ -22,7 +23,7 @@ final class Vocab implements Countable
 
     public function getToken(int $rank): string
     {
-        return $this->rankToTokens[$rank] ?? throw new \Exception("Unable to find rank: [{$rank}]");
+        return $this->rankToTokens[$rank] ?? throw new RankNotFoundException($rank);
     }
 
     public function count(): int
