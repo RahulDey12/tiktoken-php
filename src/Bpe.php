@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Rahul900day\Tiktoken;
 
 use Exception;
+use Rahul900day\Tiktoken\Contracts\BpeContract;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Utils\ArrayUtil;
 use Rahul900day\Tiktoken\Utils\EncoderUtil;
 
-final class Bpe
+final class Bpe implements BpeContract
 {
     public const MAX_INT = PHP_INT_MAX;
 
@@ -117,11 +118,11 @@ final class Bpe
             $index = $minRank[1];
 
             if ($index > 0) {
-                ArrayUtil::nthItem($bytePairs, $index - 1)[1] = $this->calculateMergedRank($bytes, $bytePairs, $index - 1);
+                ArrayUtil::at($bytePairs, $index - 1)[1] = $this->calculateMergedRank($bytes, $bytePairs, $index - 1);
             }
 
-            ArrayUtil::nthItem($bytePairs, $index)[1] = $this->calculateMergedRank($bytes, $bytePairs, $index);
-            ArrayUtil::unsetNthItem($bytePairs, $index + 1);
+            ArrayUtil::at($bytePairs, $index)[1] = $this->calculateMergedRank($bytes, $bytePairs, $index);
+            ArrayUtil::unsetAt($bytePairs, $index + 1);
 
             $minRank = $this->getMinRankPair(ArrayUtil::getSegment($bytePairs, 0, count($bytePairs) - 1));
         }
@@ -170,8 +171,8 @@ final class Bpe
             return self::MAX_INT;
         }
 
-        $start = ArrayUtil::nthItem($parts, $startIndex)[0];
-        $stop = ArrayUtil::nthItem($parts, $startIndex + 3)[0];
+        $start = ArrayUtil::at($parts, $startIndex)[0];
+        $stop = ArrayUtil::at($parts, $startIndex + 3)[0];
 
         return $this->getRank(ArrayUtil::getSegment($bytes, $start, $stop)) ?? self::MAX_INT;
     }

@@ -8,16 +8,16 @@ use Exception;
 
 final class ArrayUtil
 {
-    public static function &nthItem(array &$array, int $nth): mixed
+    public static function &at(array &$array, int $at): mixed
     {
-        $key = array_keys($array)[$nth];
+        $key = array_keys($array)[$at];
 
         return $array[$key];
     }
 
-    public static function unsetNthItem(array &$array, int $nth): void
+    public static function unsetAt(array &$array, int $at): void
     {
-        $key = array_keys($array)[$nth];
+        $key = array_keys($array)[$at];
 
         unset($array[$key]);
     }
