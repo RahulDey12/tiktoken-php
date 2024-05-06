@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Utils;
 
-use Exception;
+use Rahul900day\Tiktoken\Exceptions\InvalidArraySegmentException;
 
 final class ArrayUtil
 {
@@ -25,7 +25,7 @@ final class ArrayUtil
     public static function getSegment(array $array, int $start, int $end): array
     {
         if ($end <= $start) {
-            throw new Exception("End index should be greater than start index. Start: {$start}, End: {$end}.");
+            throw new InvalidArraySegmentException($start, $end);
         }
 
         return array_slice($array, $start, $end - $start);

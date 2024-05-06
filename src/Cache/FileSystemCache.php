@@ -30,7 +30,10 @@ class FileSystemCache implements CacheContract
 
     public function set(string $key, mixed $value): void
     {
-        $this->cache->get($key, fn (): mixed => $value);
+        $item = $this->cache->getItem($key);
+        $item->set($value);
+
+        $this->cache->save($item);
     }
 
     public function delete(string $key): bool

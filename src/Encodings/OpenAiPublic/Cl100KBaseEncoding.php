@@ -32,10 +32,10 @@ class Cl100KBaseEncoding implements EncodingContract
             "/'(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}+|\p{N}{1,3}| ?[^\s\p{L}\p{N}]++[\r\n]*|\s*[\r\n]|\s+(?!\S)|\s+/u",
             $vocab,
             [
-                SpecialToken::ENDOFTEXT->value => 50256,
-                SpecialToken::FIM_PREFIX->value => 50281,
-                SpecialToken::FIM_MIDDLE->value => 50282,
-                SpecialToken::FIM_SUFFIX->value => 50283,
+                SpecialToken::ENDOFTEXT->value => 100257,
+                SpecialToken::FIM_PREFIX->value => 100258,
+                SpecialToken::FIM_MIDDLE->value => 100259,
+                SpecialToken::FIM_SUFFIX->value => 100260,
                 SpecialToken::ENDOFPROMPT->value => 100276,
             ]
         );

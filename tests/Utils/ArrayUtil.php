@@ -1,5 +1,6 @@
 <?php
 
+use Rahul900day\Tiktoken\Exceptions\InvalidArraySegmentException;
 use Rahul900day\Tiktoken\Utils\ArrayUtil;
 
 beforeEach(function () {
@@ -33,3 +34,7 @@ it('can give segment', function (int $start, int $end, array $expected) {
     [0, 2, [1, 5]],
     [2, 5, [8, 5, 7]],
 ]);
+
+it('can throw error while give invalid segment', function () {
+    ArrayUtil::getSegment([1, 2, 3, 4, 5, 6], 6, 3);
+})->throws(InvalidArraySegmentException::class);
