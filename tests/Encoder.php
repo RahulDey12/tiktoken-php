@@ -3,6 +3,7 @@
 use Rahul900day\Tiktoken\Contracts\BpeContract;
 use Rahul900day\Tiktoken\Encoder;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
+use Rahul900day\Tiktoken\Exceptions\RankNotFoundException;
 use Rahul900day\Tiktoken\Exceptions\SpecialTokenNotAllowedException;
 use Rahul900day\Tiktoken\Vocab;
 
@@ -40,12 +41,34 @@ it('can decode ranks', function () {
     expect($encoder->decode([1, 2, 3]))->toBe('abc');
 });
 
+it('can throw error on rank not found', function () {
+    $encoder = new Encoder(
+        'gpt-fake',
+        '\s',
+        $this->vocab,
+        [SpecialToken::ENDOFTEXT->value => 50],
+        bpe: $this->bpe
+    );
+    $encoder->decode([150]);
+})->throws(RankNotFoundException::class);
+
+it('can decode special ranks', function () {
+    $encoder = new Encoder(
+        'gpt-fake',
+        '\s',
+        $this->vocab,
+        [SpecialToken::ENDOFTEXT->value => 50],
+        bpe: $this->bpe
+    );
+    expect($encoder->decode([50]))->toBe('<|endoftext|>');
+});
+
 it('can throw error on special token', function () {
     $encoder = new Encoder(
         'gpt-fake',
         '\s',
         $this->vocab,
-        [SpecialToken::ENDOFTEXT->value => 5],
+        [SpecialToken::ENDOFTEXT->value => 50],
         bpe: $this->bpe
     );
 
@@ -59,7 +82,7 @@ it('cannot throw error when special token allowed', function () {
         'gpt-fake',
         '\s',
         $this->vocab,
-        [SpecialToken::ENDOFTEXT->value => 5, SpecialToken::STARTOFTEXT->value => 4],
+        [SpecialToken::ENDOFTEXT->value => 50, SpecialToken::STARTOFTEXT->value => 40],
         bpe: $this->bpe
     );
 

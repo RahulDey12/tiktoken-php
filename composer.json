@@ -12,8 +12,15 @@
         "ext-ctype": "*",
         "guzzlehttp/guzzle": "^7.8",
         "symfony/filesystem": "^6.4",
-        "spatie/async": "^1.6",
         "symfony/cache": "^7.0"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "6.4.x-dev",
+        "phpbench/phpbench": "1.2.x-dev",
+        "rector/rector": "^1.0",
+        "laravel/pint": "^1.15",
+        "pestphp/pest": "^2.34",
+        "mockery/mockery": "^1.6"
     },
     "autoload": {
         "psr-4": {
@@ -27,14 +34,6 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "require-dev": {
-        "symfony/var-dumper": "6.4.x-dev",
-        "phpbench/phpbench": "1.2.x-dev",
-        "rector/rector": "^1.0",
-        "laravel/pint": "^1.15",
-        "pestphp/pest": "^2.34",
-        "mockery/mockery": "^1.6"
-    },
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true

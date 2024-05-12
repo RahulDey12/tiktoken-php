@@ -66,6 +66,26 @@ test('encode empty', function () {
     expect($encoding->encode(""))->toBe([]);
 });
 
-test('basic round-trip', function () {
-    $encoding = Tiktoken::getEncoding('r50k_base');
-});
+test('basic round-trip', function (string $encodingName) {
+    $encoding = Tiktoken::getEncoding($encodingName);
+
+    $values = [
+        "hello",
+        "hello ",
+        "hello  ",
+        " hello",
+        " hello ",
+        " hello  ",
+        "hello world",
+        "请考试我的软件！12345",
+    ];
+
+    foreach ($values as $value) {
+        expect($encoding->decode($encoding->encode($value)))->toBe($value)
+            ->and($encoding->decode($encoding->encodeOrdinary($value)))->toBe($value);
+    }
+
+})->with([
+    'r50k_base',
+    'cl100k_base',
+]);

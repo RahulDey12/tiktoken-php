@@ -6,6 +6,7 @@ namespace Rahul900day\Tiktoken;
 
 use Rahul900day\Tiktoken\Contracts\BpeContract;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
+use Rahul900day\Tiktoken\Exceptions\RankNotFoundException;
 use Rahul900day\Tiktoken\Exceptions\SpecialTokenNotAllowedException;
 
 class Encoder
@@ -16,8 +17,8 @@ class Encoder
         public readonly string $name,
         protected readonly string $pattern,
         protected readonly Vocab $vocab,
-        protected readonly array $specialTokens,
-        protected ?int $vocabLength = null,
+        public readonly array $specialTokens,
+        public readonly ?int $vocabLength = null,
         protected ?BpeContract $bpe = null,
     ) {
         if(! $this->bpe) {
@@ -78,7 +79,17 @@ class Encoder
         $text = '';
 
         foreach ($tokens as $token) {
-            $text .= $this->vocab->getToken($token);
+            try{
+                $text .= $this->vocab->getToken($token);
+            }catch (RankNotFoundException $exception){
+                $piece = array_search($token, $this->specialTokens);
+
+                if(! $piece) {
+                    throw $exception;
+                }
+
+                $text .= $piece;
+            }
         }
 
         return $text;
