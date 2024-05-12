@@ -2,3 +2,5 @@
 /.coverage
 /.idea
 /vendor
+
+composer.lock
