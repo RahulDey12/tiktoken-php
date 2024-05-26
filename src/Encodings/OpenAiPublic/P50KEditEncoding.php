@@ -11,7 +11,7 @@ use Rahul900day\Tiktoken\Loaders\TiktokenLoader;
 use Rahul900day\Tiktoken\Readers\HttpReader;
 use Rahul900day\Tiktoken\Vocab;
 
-class P50KEditEncoding implements EncodingContract
+class P50KEditEncoding extends AbstractEncoding
 {
     protected TiktokenLoader $loader;
 
@@ -20,23 +20,31 @@ class P50KEditEncoding implements EncodingContract
         $this->loader = new TiktokenLoader(HttpReader::create());
     }
 
-    public function __invoke(): Encoder
+    protected function getName(): string
     {
-        $vocab = new Vocab($this->loader->load(
+        return 'p50k_base';
+    }
+
+    protected function getPattern(): string
+    {
+        return "/'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/u";
+    }
+
+    protected function getSpecialTokens(): array
+    {
+        return [
+            SpecialToken::ENDOFTEXT->value => 50256,
+            SpecialToken::FIM_PREFIX->value => 50281,
+            SpecialToken::FIM_MIDDLE->value => 50282,
+            SpecialToken::FIM_SUFFIX->value => 50283,
+        ];
+    }
+
+    protected function getVocab(): Vocab
+    {
+        return new Vocab($this->loader->load(
             'https://openaipublic.blob.core.windows.net/encodings/p50k_base.tiktoken',
             '94b5ca7dff4d00767bc256fdd1b27e5b17361d7b8a5f968547f9f23eb70d2069',
         ));
-
-        return new Encoder(
-            'p50k_base',
-            "/'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/u",
-            $vocab,
-            [
-                SpecialToken::ENDOFTEXT->value => 50256,
-                SpecialToken::FIM_PREFIX->value => 50281,
-                SpecialToken::FIM_MIDDLE->value => 50282,
-                SpecialToken::FIM_SUFFIX->value => 50283,
-            ],
-        );
     }
 }

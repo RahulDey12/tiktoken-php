@@ -15,7 +15,7 @@ class Encoder
 
     public function __construct(
         public readonly string $name,
-        protected readonly string $pattern,
+        public readonly string $pattern,
         protected readonly Vocab $vocab,
         public readonly array $specialTokens,
         public readonly ?int $vocabLength = null,
