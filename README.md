@@ -73,6 +73,15 @@ $encoding->encode("<|im_start|>", allowedSpecial: 'all');
 
 ```
 
+## Supported Models
+
+| Model       |Supported|
+|-------------|---------|
+| GPT-3       |:white_check_mark:|
+| GPT-3.5 & 4 | :white_check_mark: |
+| GPT-4o | :x: |
+
+
 ## Credits
 
 - [Rahul Dey](https://github.com/RahulDey12)
