@@ -37,14 +37,13 @@ $encoder->encode('<|endoftext|>', allowedSpecial: 'all');
 
 Tiktoken always cache the server's responses when downloading them.
 
-By default it uses the system's default directory to cache a response but you
+By default it uses the system's default temporary directory to cache a response but you
 can still overwrite the cache location by setting `TIKTOKEN_CACHE_DIR` environment variable.
 
 ### Registering Custom Encoding
 
 ```php
 use Rahul900day\Tiktoken\Encodings\OpenAiPublic\Cl100KBaseEncoding;
-use Rahul900day\Tiktoken\Loaders\TiktokenLoader;
 
 class Cl100KIm extends Cl100KBaseEncoding 
 {
@@ -73,3 +72,12 @@ $encoding = Tiktoken::getEncoding('cl100k_im');
 $encoding->encode("<|im_start|>", allowedSpecial: 'all');
 
 ```
+
+## Credits
+
+- [Rahul Dey](https://github.com/RahulDey12)
+- [All Contributors](https://github.com/RahulDey12/tiktoken-php/graphs/contributors)
+
+## License
+
+This package is released under the [MIT License](https://github.com/RahulDey12/tiktoken-php/blob/main/LICENSE.md).
