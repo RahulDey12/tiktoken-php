@@ -81,7 +81,9 @@ $encoding->encode("<|im_start|>", allowedSpecial: 'all');
 
 ```
 
+## Security Vulnerabilities
 
+Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
 
 ## Credits
 
