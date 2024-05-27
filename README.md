@@ -12,6 +12,14 @@ Install Tiktoken via [Composer](https://getcomposer.org/) package manager.
 composer require rahul900day/tiktoken-php
 ```
 
+## Supported Models
+
+| Model       |Supported|
+|-------------|---------|
+| GPT-3       |:white_check_mark:|
+| GPT-3.5 & 4 | :white_check_mark: |
+| GPT-4o | :x: |
+
 ## Usage
 
 ### Basic Usage
@@ -73,13 +81,6 @@ $encoding->encode("<|im_start|>", allowedSpecial: 'all');
 
 ```
 
-## Supported Models
-
-| Model       |Supported|
-|-------------|---------|
-| GPT-3       |:white_check_mark:|
-| GPT-3.5 & 4 | :white_check_mark: |
-| GPT-4o | :x: |
 
 
 ## Credits
