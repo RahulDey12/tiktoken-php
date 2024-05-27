@@ -81,6 +81,10 @@ $encoding->encode("<|im_start|>", allowedSpecial: 'all');
 
 ```
 
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
 ## Security Vulnerabilities
 
 Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
