@@ -14,7 +14,7 @@ final class Bpe implements BpeContract
 {
     public const MAX_INT = PHP_INT_MAX;
 
-    private string $specialRegex;
+    private readonly string $specialRegex;
 
     public function __construct(
         private readonly Vocab $vocab,

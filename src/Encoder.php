@@ -21,7 +21,7 @@ class Encoder
         public readonly ?int $vocabLength = null,
         protected ?BpeContract $bpe = null,
     ) {
-        if(! $this->bpe) {
+        if(is_null($this->bpe)) {
             $this->initializeBpe();
         }
     }
