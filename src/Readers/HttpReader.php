@@ -26,11 +26,7 @@ class HttpReader implements ReaderContract
 
     public function read(string|RequestInterface $location): string
     {
-        if (is_string($location)) {
-            $request = (new Psr17Factory())->createRequest('GET', $location);
-        } else {
-            $request = $location;
-        }
+        $request = is_string($location) ? (new Psr17Factory())->createRequest('GET', $location) : $location;
 
         $response = $this->client->sendRequest($request);
 

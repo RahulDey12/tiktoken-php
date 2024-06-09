@@ -25,7 +25,7 @@ final class TiktokenLoader extends Loader
             $result[base64_decode($token)] = intval($rank);
         }
 
-        if (count($result) === 0) {
+        if ($result === []) {
             throw new \Exception('Invalid tiktoken');
         }
 
