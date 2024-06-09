@@ -9,8 +9,14 @@ use Rahul900day\Tiktoken\Exceptions\RankNotFoundException;
 
 final class Vocab implements Countable
 {
+    /**
+     * @var non-empty-array<int, string>
+     */
     public readonly array $rankToTokens;
 
+    /**
+     * @param non-empty-array<string|int, int> $tokenToRanks
+     */
     public function __construct(public readonly array $tokenToRanks)
     {
         $this->rankToTokens = array_map('strval', array_flip($this->tokenToRanks));

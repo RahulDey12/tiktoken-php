@@ -32,6 +32,7 @@ abstract class Loader
         $cacheKey = sha1($location);
 
         if ($this->cache->has($cacheKey)) {
+            /** @var string $data */
             $data = $this->cache->get($cacheKey);
 
             if (is_null($expectedHash) || $this->checkHash($data, $expectedHash)) {

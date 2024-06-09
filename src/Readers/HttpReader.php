@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Readers;
 
-use GuzzleHttp\Client;
+use Http\Discovery\Psr17Factory;
+use Http\Discovery\Psr18ClientDiscovery;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
 use Rahul900day\Tiktoken\Contracts\ReaderContract;
 
 class HttpReader implements ReaderContract
@@ -15,16 +17,22 @@ class HttpReader implements ReaderContract
         //
     }
 
-    public static function create(?ClientInterface $client = null): static
+    public static function create(?ClientInterface $client = null): HttpReader
     {
-        $client ??= new Client();
+        $client ??= Psr18ClientDiscovery::find();
 
-        return new static($client);
+        return new self($client);
     }
 
-    public function read(string $location): string
+    public function read(string|RequestInterface $location): string
     {
-        $response = $this->client->request('GET', $location);
+        if(is_string($location)) {
+            $request = (new Psr17Factory())->createRequest('GET', $location);
+        }else {
+            $request = $location;
+        }
+
+        $response = $this->client->sendRequest($request);
 
         return $response->getBody()->getContents();
     }

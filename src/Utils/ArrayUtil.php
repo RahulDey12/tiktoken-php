@@ -8,6 +8,13 @@ use Rahul900day\Tiktoken\Exceptions\InvalidArraySegmentException;
 
 final class ArrayUtil
 {
+    /**
+     * @template TKey
+     * @template TValue
+     * @param array<TKey, TValue> $array
+     * @param int $at
+     * @return mixed
+     */
     public static function &at(array &$array, int $at): mixed
     {
         $key = array_keys($array)[$at];
@@ -15,6 +22,13 @@ final class ArrayUtil
         return $array[$key];
     }
 
+    /**
+     * @template TKey
+     * @template TValue
+     * @param array<TKey, TValue> $array
+     * @param int $at
+     * @return void
+     */
     public static function unsetAt(array &$array, int $at): void
     {
         $key = array_keys($array)[$at];
@@ -22,6 +36,14 @@ final class ArrayUtil
         unset($array[$key]);
     }
 
+    /**
+     * @template TKey
+     * @template TValue
+     * @param non-empty-array<TKey, TValue> $array
+     * @param int $start
+     * @param int $end
+     * @return array<TKey, TValue>
+     */
     public static function getSegment(array $array, int $start, int $end): array
     {
         if ($end <= $start) {

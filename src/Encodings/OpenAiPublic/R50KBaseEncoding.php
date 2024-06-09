@@ -32,6 +32,9 @@ class R50KBaseEncoding extends AbstractEncoding
         return "/'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/u";
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function getSpecialTokens(): array
     {
         return [

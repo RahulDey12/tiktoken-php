@@ -7,7 +7,7 @@ use Rahul900day\Tiktoken\Readers\HttpReader;
 
 it('can read http response', function () {
     $client = mock(ClientInterface::class);
-    $client->shouldReceive('request')->once()->andReturnUsing(function () {
+    $client->shouldReceive('sendRequest')->once()->andReturnUsing(function () {
         $response = mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->once()->andReturnUsing(function () {
             $stream = mock(StreamInterface::class);

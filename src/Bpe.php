@@ -16,6 +16,12 @@ final class Bpe implements BpeContract
 
     private readonly string $specialRegex;
 
+    /**
+     * @param Vocab $vocab
+     * @param array<string, int> $specialTokens
+     * @param string $regex
+     * @throws Exceptions\InvalidPatternException
+     */
     public function __construct(
         private readonly Vocab $vocab,
         private readonly array $specialTokens,
@@ -24,6 +30,9 @@ final class Bpe implements BpeContract
         $this->specialRegex = SpecialToken::getRegex(array_keys($specialTokens));
     }
 
+    /**
+     * @inheritDoc
+     */
     public function encode(string $text, array $allowedSpecial): array
     {
         $ranks = [];
@@ -88,6 +97,10 @@ final class Bpe implements BpeContract
         return [$ranks, $last_piece_token_len];
     }
 
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
     public function encodeOrdinary(string $text): array
     {
         $ranks = [];

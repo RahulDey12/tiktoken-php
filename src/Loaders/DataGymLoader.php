@@ -9,6 +9,14 @@ use Rahul900day\Tiktoken\Utils\EncoderUtil;
 
 final class DataGymLoader extends Loader
 {
+    /**
+     * @param string $vocabBpeFile
+     * @param string $encoderJsonFile
+     * @param string|null $vocabBpeHash
+     * @param string|null $encoderJsonHash
+     * @return non-empty-array<int|string, int>
+     * @throws \Rahul900day\Tiktoken\Exceptions\InvalidChecksumException
+     */
     public function load(
         string $vocabBpeFile,
         string $encoderJsonFile,
@@ -101,6 +109,7 @@ final class DataGymLoader extends Loader
 
     private function loadEncoderJson(string $encoderJsonFile, ?string $encoderJsonHash, array $dataGymByteToByteMap): array
     {
+        /** @var non-empty-array<string, int> $encoderJson */
         $encoderJson = json_decode($this->readFileCached($encoderJsonFile, $encoderJsonHash), true);
         $encoderJsonLoaded = [];
         foreach ($encoderJson as $key => $value) {

@@ -15,6 +15,11 @@ enum SpecialToken: string
     case FIM_SUFFIX = '<|fim_suffix|>';
     case ENDOFPROMPT = '<|endofprompt|>';
 
+    /**
+     * @param array<string> $tokens
+     * @return string
+     * @throws InvalidPatternException
+     */
     public static function getRegex(array $tokens): string
     {
         $parts = array_map('preg_quote', $tokens);

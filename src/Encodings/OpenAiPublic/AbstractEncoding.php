@@ -17,6 +17,9 @@ abstract class AbstractEncoding implements EncodingContract
 
     abstract protected function getPattern(): string;
 
+    /**
+     * @return array<string, int>
+     */
     abstract protected function getSpecialTokens(): array;
 
     abstract protected function getVocab(): Vocab;

@@ -16,10 +16,13 @@ use Rahul900day\Tiktoken\Exceptions\InvalidEncodingException;
 
 class Registry
 {
+    /** @var array<string, Encoder> */
     protected static array $resolvedEncodings = [];
 
+    /** @var array<string, EncodingContract|Closure> */
     protected static array $encodings = [];
 
+    /** @var non-empty-array<string, array{0: class-string, 1: array}>  */
     public static array $defaultEncodings = [
         'gpt2' => [Gpt2Encoding::class, []],
         'r50k_base' => [R50KBaseEncoding::class, []],
@@ -81,7 +84,7 @@ class Registry
 
             $encoder = new $class(...$params);
 
-            self::registerEncoding($name, $encoder);
+            self::registerEncoding($name, $encoder); // @phpstan-ignore-line
         }
     }
 }
