@@ -17,9 +17,8 @@ final class Bpe implements BpeContract
     private readonly string $specialRegex;
 
     /**
-     * @param Vocab $vocab
-     * @param array<string, int> $specialTokens
-     * @param string $regex
+     * @param  array<string, int>  $specialTokens
+     *
      * @throws Exceptions\InvalidPatternException
      */
     public function __construct(
@@ -31,7 +30,7 @@ final class Bpe implements BpeContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function encode(string $text, array $allowedSpecial): array
     {
@@ -98,7 +97,8 @@ final class Bpe implements BpeContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws Exception
      */
     public function encodeOrdinary(string $text): array

@@ -7,9 +7,8 @@ namespace Rahul900day\Tiktoken\Loaders;
 final class TiktokenLoader extends Loader
 {
     /**
-     * @param string $bpeFile
-     * @param string|null $expectedHash
      * @return non-empty-array<int|string, int>
+     *
      * @throws \Rahul900day\Tiktoken\Exceptions\InvalidChecksumException
      */
     public function load(string $bpeFile, ?string $expectedHash = null): array
@@ -26,7 +25,7 @@ final class TiktokenLoader extends Loader
             $result[base64_decode($token)] = intval($rank);
         }
 
-        if(count($result) === 0) {
+        if (count($result) === 0) {
             throw new \Exception('Invalid tiktoken');
         }
 

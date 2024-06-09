@@ -10,11 +10,8 @@ use Rahul900day\Tiktoken\Utils\EncoderUtil;
 final class DataGymLoader extends Loader
 {
     /**
-     * @param string $vocabBpeFile
-     * @param string $encoderJsonFile
-     * @param string|null $vocabBpeHash
-     * @param string|null $encoderJsonHash
      * @return non-empty-array<int|string, int>
+     *
      * @throws \Rahul900day\Tiktoken\Exceptions\InvalidChecksumException
      */
     public function load(

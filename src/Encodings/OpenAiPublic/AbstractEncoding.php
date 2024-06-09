@@ -6,7 +6,6 @@ namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 
 use Rahul900day\Tiktoken\Contracts\EncodingContract;
 use Rahul900day\Tiktoken\Encoder;
-use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Vocab;
 
 abstract class AbstractEncoding implements EncodingContract
@@ -34,5 +33,4 @@ abstract class AbstractEncoding implements EncodingContract
             $this->vocabLength,
         );
     }
-
 }

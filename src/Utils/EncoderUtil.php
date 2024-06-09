@@ -7,7 +7,6 @@ namespace Rahul900day\Tiktoken\Utils;
 final class EncoderUtil
 {
     /**
-     * @param string $string
      * @return array<int>
      */
     public static function toBytes(string $string): array
@@ -16,8 +15,7 @@ final class EncoderUtil
     }
 
     /**
-     * @param array<int> $bytes
-     * @return string
+     * @param  array<int>  $bytes
      */
     public static function fromBytes(array $bytes): string
     {

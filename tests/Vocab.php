@@ -22,7 +22,7 @@ it('can give rank', function (string|int $token, ?int $rank) {
     ['c', 2],
     [' ', 3],
     [2, 60],
-    ['x', null]
+    ['x', null],
 ]);
 
 it('can give token', function (string $token, int $rank) {

@@ -15,7 +15,7 @@ final class Vocab implements Countable
     public readonly array $rankToTokens;
 
     /**
-     * @param non-empty-array<string|int, int> $tokenToRanks
+     * @param  non-empty-array<string|int, int>  $tokenToRanks
      */
     public function __construct(public readonly array $tokenToRanks)
     {

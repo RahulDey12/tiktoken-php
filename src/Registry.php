@@ -22,7 +22,7 @@ class Registry
     /** @var array<string, EncodingContract|Closure> */
     protected static array $encodings = [];
 
-    /** @var non-empty-array<string, array{0: class-string, 1: array}>  */
+    /** @var non-empty-array<string, array{0: class-string, 1: array}> */
     public static array $defaultEncodings = [
         'gpt2' => [Gpt2Encoding::class, []],
         'r50k_base' => [R50KBaseEncoding::class, []],
@@ -33,7 +33,7 @@ class Registry
 
     protected static function registerEncoding(string $name, EncodingContract|Closure $encoding): void
     {
-        if(isset(self::$resolvedEncodings[$name])) {
+        if (isset(self::$resolvedEncodings[$name])) {
             unset(self::$resolvedEncodings[$name]);
         }
 

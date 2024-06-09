@@ -10,7 +10,7 @@ it('can give encoding', function (string $encodingName) {
     expect($encoding)->toBeInstanceOf(Encoder::class);
 })->with([
     'cl100k_base',
-    'gpt2'
+    'gpt2',
 ]);
 
 it('can give encoding from model name', function (string $modelName) {
@@ -21,7 +21,7 @@ it('can give encoding from model name', function (string $modelName) {
     'gpt-4',
     'gpt-2',
     'text-davinci-003',
-    'code-search-ada-code-001'
+    'code-search-ada-code-001',
 ]);
 
 it('can give encoding from model prefix', function (string $modelName) {

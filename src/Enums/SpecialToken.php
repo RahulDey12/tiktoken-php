@@ -16,8 +16,8 @@ enum SpecialToken: string
     case ENDOFPROMPT = '<|endofprompt|>';
 
     /**
-     * @param array<string> $tokens
-     * @return string
+     * @param  array<string>  $tokens
+     *
      * @throws InvalidPatternException
      */
     public static function getRegex(array $tokens): string

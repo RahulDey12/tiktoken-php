@@ -9,7 +9,8 @@ beforeEach(function () {
     $this->reader = mock(ReaderContract::class);
     $this->cache = mock(CacheContract::class);
 
-    $this->loader = new class($this->reader, $this->cache) extends Loader {
+    $this->loader = new class($this->reader, $this->cache) extends Loader
+    {
         public function load(string $path, ?string $hash = null)
         {
             return $this->readFileCached($path, $hash);

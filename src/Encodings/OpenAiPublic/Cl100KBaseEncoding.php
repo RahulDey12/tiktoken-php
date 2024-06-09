@@ -29,7 +29,7 @@ class Cl100KBaseEncoding extends AbstractEncoding
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getSpecialTokens(): array
     {

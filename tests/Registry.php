@@ -1,11 +1,7 @@
 <?php
 
 use Rahul900day\Tiktoken\Encoder;
-use Rahul900day\Tiktoken\Encodings\OpenAiPublic\Cl100KBaseEncoding;
 use Rahul900day\Tiktoken\Encodings\OpenAiPublic\Gpt2Encoding;
-use Rahul900day\Tiktoken\Encodings\OpenAiPublic\P50KBaseEncoding;
-use Rahul900day\Tiktoken\Encodings\OpenAiPublic\P50KEditEncoding;
-use Rahul900day\Tiktoken\Encodings\OpenAiPublic\R50KBaseEncoding;
 use Rahul900day\Tiktoken\Exceptions\InvalidEncodingException;
 use Rahul900day\Tiktoken\Registry;
 
@@ -64,13 +60,11 @@ it('can replace new encoding', function () {
 
     expect(spl_object_hash($encoder1))->not->toBe(spl_object_hash($encoder2));
 
-    Registry::registerCustomEncoding('gpt-fake', fn() => $encoder1);
+    Registry::registerCustomEncoding('gpt-fake', fn () => $encoder1);
     expect(spl_object_hash(Registry::getEncoding('gpt-fake')))
         ->toBe(spl_object_hash($encoder1));
 
-    Registry::registerCustomEncoding('gpt-fake', fn() => $encoder2);
+    Registry::registerCustomEncoding('gpt-fake', fn () => $encoder2);
     expect(spl_object_hash(Registry::getEncoding('gpt-fake')))
         ->toBe(spl_object_hash($encoder2));
 });
-
-

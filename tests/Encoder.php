@@ -30,13 +30,13 @@ it('can encode a text', function () {
         ->andReturn([[1, 2, 3], 0])
         ->once();
 
-    $encoder = new Encoder('gpt-fake', '',  $this->vocab, [], 10, $this->bpe);
+    $encoder = new Encoder('gpt-fake', '', $this->vocab, [], 10, $this->bpe);
 
     expect($encoder->encode('Fake'))->toBe([1, 2, 3]);
 });
 
 it('can decode ranks', function () {
-    $encoder = new Encoder('gpt-fake', '',  $this->vocab, [], 10, $this->bpe);
+    $encoder = new Encoder('gpt-fake', '', $this->vocab, [], 10, $this->bpe);
 
     expect($encoder->decode([1, 2, 3]))->toBe('abc');
 });
@@ -108,13 +108,13 @@ it('can encode batch', function () {
         ->andReturn([[1, 2, 3], 0], [[4, 5, 6], 0])
         ->twice();
 
-    $encoder = new Encoder('gpt-fake', '',  $this->vocab, [], 10, $this->bpe);
+    $encoder = new Encoder('gpt-fake', '', $this->vocab, [], 10, $this->bpe);
 
     expect($encoder->encodeBatch(['Fake', 'Fake1']))->toBe([[1, 2, 3], [4, 5, 6]]);
 });
 
 it('can decode batch', function () {
-    $encoder = new Encoder('gpt-fake', '',  $this->vocab, [], 10, $this->bpe);
+    $encoder = new Encoder('gpt-fake', '', $this->vocab, [], 10, $this->bpe);
 
     expect($encoder->decodeBatch([[1, 2, 3], [4, 5, 6]]))->toBe(['abc', 'def']);
 });
@@ -124,7 +124,7 @@ it('can encode ordinary', function () {
         ->andReturn([1, 2, 3])
         ->once();
 
-    $encoder = new Encoder('gpt-fake', '',  $this->vocab, [], 10, $this->bpe);
+    $encoder = new Encoder('gpt-fake', '', $this->vocab, [], 10, $this->bpe);
 
     expect($encoder->encodeOrdinary('Fake'))->toBe([1, 2, 3]);
 });
@@ -134,7 +134,7 @@ it('can encode ordinary batch', function () {
         ->andReturn([1, 2, 3], [4, 5, 6])
         ->twice();
 
-    $encoder = new Encoder('gpt-fake', '',  $this->vocab, [], 10, $this->bpe);
+    $encoder = new Encoder('gpt-fake', '', $this->vocab, [], 10, $this->bpe);
 
     expect($encoder->encodeOrdinaryBatch(['Fake', 'Fake1']))->toBe([[1, 2, 3], [4, 5, 6]]);
 });

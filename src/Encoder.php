@@ -14,12 +14,7 @@ class Encoder
     protected int $maxTokenValue;
 
     /**
-     * @param string $name
-     * @param string $pattern
-     * @param Vocab $vocab
-     * @param array<string, int> $specialTokens
-     * @param int|null $vocabLength
-     * @param BpeContract|null $bpe
+     * @param  array<string, int>  $specialTokens
      */
     public function __construct(
         public readonly string $name,
@@ -29,14 +24,14 @@ class Encoder
         public readonly ?int $vocabLength = null,
         protected ?BpeContract $bpe = null,
     ) {
-        if(is_null($this->bpe)) {
+        if (is_null($this->bpe)) {
             $this->initializeBpe();
         }
     }
 
     /**
-     * @param string $text
      * @return int[]
+     *
      * @throws \Exception
      */
     public function encodeOrdinary(string $text): array
@@ -45,8 +40,9 @@ class Encoder
     }
 
     /**
-     * @param string[] $texts
+     * @param  string[]  $texts
      * @return array<int[]>
+     *
      * @throws \Exception
      */
     public function encodeOrdinaryBatch(array $texts): array
@@ -61,10 +57,9 @@ class Encoder
     }
 
     /**
-     * @param string $text
-     * @param string[]|'all' $allowedSpecial
-     * @param string $disallowedSpecial
+     * @param  string[]|'all'  $allowedSpecial
      * @return int[]
+     *
      * @throws Exceptions\InvalidPatternException
      * @throws SpecialTokenNotAllowedException
      */
@@ -91,10 +86,10 @@ class Encoder
     }
 
     /**
-     * @param array<string> $texts
-     * @param string[]|'all' $allowedSpecial
-     * @param string $disallowedSpecial
+     * @param  array<string>  $texts
+     * @param  string[]|'all'  $allowedSpecial
      * @return array<int[]>
+     *
      * @throws Exceptions\InvalidPatternException
      * @throws SpecialTokenNotAllowedException
      */
@@ -110,8 +105,8 @@ class Encoder
     }
 
     /**
-     * @param int[] $tokens
-     * @return string
+     * @param  int[]  $tokens
+     *
      * @throws RankNotFoundException
      */
     public function decode(array $tokens): string
@@ -119,12 +114,12 @@ class Encoder
         $text = '';
 
         foreach ($tokens as $token) {
-            try{
+            try {
                 $text .= $this->vocab->getToken($token);
-            }catch (RankNotFoundException $exception){
+            } catch (RankNotFoundException $exception) {
                 $piece = array_search($token, $this->specialTokens);
 
-                if(! $piece) {
+                if (! $piece) {
                     throw $exception;
                 }
 
@@ -136,8 +131,9 @@ class Encoder
     }
 
     /**
-     * @param array<int[]> $batch
+     * @param  array<int[]>  $batch
      * @return array<string>
+     *
      * @throws RankNotFoundException
      */
     public function decodeBatch(array $batch): array
@@ -183,7 +179,7 @@ class Encoder
 
     public function getBpe(): BpeContract
     {
-        if(is_null($this->bpe)) {
+        if (is_null($this->bpe)) {
             throw new \Exception('Bpe Not Found');
         }
 

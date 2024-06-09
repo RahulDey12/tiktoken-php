@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 
-use Rahul900day\Tiktoken\Contracts\EncodingContract;
-use Rahul900day\Tiktoken\Encoder;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Loaders\TiktokenLoader;
 use Rahul900day\Tiktoken\Readers\HttpReader;
@@ -31,7 +29,7 @@ class P50KEditEncoding extends AbstractEncoding
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getSpecialTokens(): array
     {
