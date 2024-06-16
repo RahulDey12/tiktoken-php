@@ -8,7 +8,7 @@ interface BpeContract
 {
     /**
      * @param  string[]  $allowedSpecial
-     * @return array{0: int[], 1, int}
+     * @return array{0: int[], 1: int}
      */
     public function encode(string $text, array $allowedSpecial): array;
 

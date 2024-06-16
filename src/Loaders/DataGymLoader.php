@@ -43,11 +43,20 @@ final class DataGymLoader extends Loader
         return $bpeRanks;
     }
 
+    /**
+     * @param string $startChar
+     * @param string $endChar
+     * @return int[]
+     */
     private function createByteRange(string $startChar, string $endChar): array
     {
         return range(mb_ord($startChar), mb_ord($endChar));
     }
 
+    /**
+     * @param int[] $byteArray
+     * @return array<string, int>
+     */
     private function byteToCharMap(array $byteArray): array
     {
         $byteToCharMap = [];
@@ -59,6 +68,11 @@ final class DataGymLoader extends Loader
         return $byteToCharMap;
     }
 
+    /**
+     * @param int[] $rankToIntByte
+     * @param array<string, int> $dataGymByteToByteMap
+     * @return void
+     */
     private function addBytesNotInRank(array &$rankToIntByte, array &$dataGymByteToByteMap): void
     {
         $unicodeCounter = 0;
@@ -75,11 +89,24 @@ final class DataGymLoader extends Loader
         }
     }
 
+    /**
+     * @param string $vocabBpeContents
+     * @return array<array{0: string, 1: string}>
+     */
     private function createBpeMerges(string $vocabBpeContents): array
     {
-        return array_map(fn ($mergeStr): array => explode(' ', $mergeStr), array_slice(explode("\n", $vocabBpeContents), 1, -1));
+        $lines = explode("\n", $vocabBpeContents);
+        $mergeLines = array_slice($lines, 1, -1);
+        /** @var array<array{0: string, 1: string}> $merges */
+        $merges = array_map(fn($mergeStr) => explode(' ', $mergeStr, 2), $mergeLines);
+
+        return $merges;
     }
 
+    /**
+     * @param int[] $rankToIntByte
+     * @return array<string, int>
+     */
     private function createBpeRanks(array $rankToIntByte): array
     {
         $bpeRanks = [];
@@ -90,10 +117,17 @@ final class DataGymLoader extends Loader
         return $bpeRanks;
     }
 
+    /**
+     * @param array<array{0: string, 1: string}> $bpeMerges
+     * @param array<string, int> $bpeRanks
+     * @param array<string, int> $dataGymByteToByteMap
+     * @return void
+     */
     private function addMergeRanksToBpe(array $bpeMerges, array &$bpeRanks, array $dataGymByteToByteMap): void
     {
         foreach ($bpeMerges as [$first, $second]) {
 
+            /** @var int[] $tokenBytes */
             $tokenBytes = [
                 ...$this->decodeDataGym($first, $dataGymByteToByteMap),
                 ...$this->decodeDataGym($second, $dataGymByteToByteMap),
@@ -104,6 +138,13 @@ final class DataGymLoader extends Loader
         }
     }
 
+    /**
+     * @param string $encoderJsonFile
+     * @param string|null $encoderJsonHash
+     * @param array<string, int> $dataGymByteToByteMap
+     * @return array<string, int>
+     * @throws \Rahul900day\Tiktoken\Exceptions\InvalidChecksumException
+     */
     private function loadEncoderJson(string $encoderJsonFile, ?string $encoderJsonHash, array $dataGymByteToByteMap): array
     {
         /** @var non-empty-array<string, int> $encoderJson */
@@ -120,6 +161,12 @@ final class DataGymLoader extends Loader
         return $encoderJsonLoaded;
     }
 
+    /**
+     * @param array<string, int> $bpeRanks
+     * @param array<string, int> $encoderJson
+     * @return void
+     * @throws \Exception
+     */
     private function validateBpeAndEncoderJsonRanks(array $bpeRanks, array $encoderJson): void
     {
         if ($bpeRanks !== $encoderJson) {
@@ -127,6 +174,11 @@ final class DataGymLoader extends Loader
         }
     }
 
+    /**
+     * @param string|int $value
+     * @param array<string, int> $dataGymByteToByte
+     * @return int[]
+     */
     private function decodeDataGym(string|int $value, array $dataGymByteToByte): array
     {
         $bytes = [];

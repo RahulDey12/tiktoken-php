@@ -13,6 +13,7 @@ final class ArrayUtil
      * @template TValue
      *
      * @param  array<TKey, TValue>  $array
+     * @return TValue
      */
     public static function &at(array &$array, int $at): mixed
     {
@@ -38,7 +39,7 @@ final class ArrayUtil
      * @template TKey
      * @template TValue
      *
-     * @param  non-empty-array<TKey, TValue>  $array
+     * @param  array<TKey, TValue>  $array
      * @return array<TKey, TValue>
      */
     public static function getSegment(array $array, int $start, int $end): array

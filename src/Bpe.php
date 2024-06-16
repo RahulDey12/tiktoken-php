@@ -44,7 +44,7 @@ final class Bpe implements BpeContract
             while (true) {
                 // Find the next allowed special rank, if any
                 if (preg_match($this->specialRegex, mb_substr($text, $start_find), $matches, PREG_OFFSET_CAPTURE)) {
-                    /** @var array $next_special */
+                    /** @var array{0: string, 1: int} $next_special */
                     $next_special = $matches[0];
                     $match_str = mb_substr($text, $start_find + $next_special[1], mb_strlen((string) $next_special[0]));
 
@@ -122,6 +122,11 @@ final class Bpe implements BpeContract
         return $ranks;
     }
 
+    /**
+     * @param int[] $bytes
+     * @return int[]
+     * @throws Exception
+     */
     private function bpe(array $bytes): array
     {
         $bytePairs = $this->initializePairs($bytes);
@@ -131,12 +136,15 @@ final class Bpe implements BpeContract
             $index = $minRank[1];
 
             if ($index > 0) {
+                // @phpstan-ignore-next-line
                 ArrayUtil::at($bytePairs, $index - 1)[1] = $this->calculateMergedRank($bytes, $bytePairs, $index - 1);
             }
 
+            // @phpstan-ignore-next-line
             ArrayUtil::at($bytePairs, $index)[1] = $this->calculateMergedRank($bytes, $bytePairs, $index);
             ArrayUtil::unsetAt($bytePairs, $index + 1);
 
+            // @phpstan-ignore-next-line
             $minRank = $this->getMinRankPair(ArrayUtil::getSegment($bytePairs, 0, count($bytePairs) - 1));
         }
 
@@ -148,6 +156,10 @@ final class Bpe implements BpeContract
         }, $this->getAllPairs($bytePairs));
     }
 
+    /**
+     * @param int[] $bytes
+     * @return array<array{0: int, 1: int}>
+     */
     private function initializePairs(array $bytes): array
     {
         $parts = [];
@@ -165,6 +177,10 @@ final class Bpe implements BpeContract
         return $parts;
     }
 
+    /**
+     * @param array<array{0: int, 1: int}> $parts
+     * @return array{0: int, 1: int}
+     */
     private function getMinRankPair(array $parts): array
     {
         $minRank = [self::MAX_INT, self::MAX_INT];
@@ -174,25 +190,40 @@ final class Bpe implements BpeContract
                 $minRank = [$rank, $index];
             }
         }
-
         return $minRank;
     }
 
+    /**
+     * @param int[] $bytes
+     * @param array<array{0: int, 1: int}> $parts
+     * @param int $startIndex
+     * @return int
+     */
     private function calculateMergedRank(array $bytes, array $parts, int $startIndex): int
     {
         if ($startIndex + 3 >= count($parts)) {
             return self::MAX_INT;
         }
 
-        $start = ArrayUtil::at($parts, $startIndex)[0];
-        $stop = ArrayUtil::at($parts, $startIndex + 3)[0];
+        /** @var array{0: int, 1: int} $startPart */
+        $startPart = ArrayUtil::at($parts, $startIndex);
+        /** @var array{0: int, 1: int} $stopPart */
+        $stopPart = ArrayUtil::at($parts, $startIndex + 3); // @phpstan-ignore-line
+
+        $start = $startPart[0];
+        $stop = $stopPart[0];
 
         return $this->getRank(ArrayUtil::getSegment($bytes, $start, $stop)) ?? self::MAX_INT;
     }
 
+    /**
+     * @param non-empty-array<int[]> $parts
+     * @return array<array<int[]>>
+     */
     private function getAllPairs(array $parts): array
     {
         $pairs = [];
+        /** @var int[] $previousPart */
         $previousPart = array_shift($parts);
 
         foreach ($parts as $part) {
@@ -203,6 +234,10 @@ final class Bpe implements BpeContract
         return $pairs;
     }
 
+    /**
+     * @param int[]|string $bytes
+     * @return int|null
+     */
     private function getRank(array|string $bytes): ?int
     {
         if (is_array($bytes)) {
