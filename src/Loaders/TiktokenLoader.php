@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Loaders;
 
+use Rahul900day\Tiktoken\Exceptions\TiktokenException;
+
 final class TiktokenLoader extends Loader
 {
     /**
@@ -26,7 +28,7 @@ final class TiktokenLoader extends Loader
         }
 
         if ($result === []) {
-            throw new \Exception('Invalid tiktoken');
+            throw new TiktokenException('Invalid tiktoken');
         }
 
         return $result;

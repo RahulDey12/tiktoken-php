@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Exceptions;
 
-use Exception;
-
-class InvalidPatternException extends Exception
+class InvalidPatternException extends TiktokenException
 {
     public function __construct(string $pattern)
     {

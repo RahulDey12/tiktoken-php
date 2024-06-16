@@ -8,6 +8,7 @@ use Rahul900day\Tiktoken\Contracts\BpeContract;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Exceptions\RankNotFoundException;
 use Rahul900day\Tiktoken\Exceptions\SpecialTokenNotAllowedException;
+use Rahul900day\Tiktoken\Exceptions\TiktokenException;
 
 class Encoder
 {
@@ -32,7 +33,7 @@ class Encoder
     /**
      * @return int[]
      *
-     * @throws \Exception
+     * @throws TiktokenException
      */
     public function encodeOrdinary(string $text): array
     {
@@ -43,7 +44,7 @@ class Encoder
      * @param  string[]  $texts
      * @return array<int[]>
      *
-     * @throws \Exception
+     * @throws TiktokenException
      */
     public function encodeOrdinaryBatch(array $texts): array
     {
@@ -163,11 +164,11 @@ class Encoder
     {
         if ($this->vocabLength) {
             if (count($this->vocab->tokenToRanks) + count($this->specialTokens) !== $this->vocabLength) {
-                throw new \Exception('Vocab length doesnt match with the actual length of tokens.');
+                throw new TiktokenException('Vocab length doesnt match with the actual length of tokens.');
             }
 
             if ($this->maxTokenValue !== $this->vocabLength - 1) {
-                throw new \Exception('Incorrect vocab length.');
+                throw new TiktokenException('Incorrect vocab length.');
             }
         }
     }
@@ -180,7 +181,7 @@ class Encoder
     public function getBpe(): BpeContract
     {
         if (is_null($this->bpe)) {
-            throw new \Exception('Bpe Not Found');
+            throw new TiktokenException('Bpe Not Found');
         }
 
         return $this->bpe;

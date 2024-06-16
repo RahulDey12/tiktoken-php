@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Exceptions;
 
-use Exception;
-
-class InvalidEncodingException extends Exception
+class InvalidEncodingException extends TiktokenException
 {
     public function __construct(string $encodingName)
     {

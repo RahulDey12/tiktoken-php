@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rahul900day\Tiktoken\Loaders;
 
 use Rahul900day\Tiktoken\Enums\SpecialToken;
+use Rahul900day\Tiktoken\Exceptions\TiktokenException;
 use Rahul900day\Tiktoken\Utils\EncoderUtil;
 
 final class DataGymLoader extends Loader
@@ -44,8 +45,6 @@ final class DataGymLoader extends Loader
     }
 
     /**
-     * @param string $startChar
-     * @param string $endChar
      * @return int[]
      */
     private function createByteRange(string $startChar, string $endChar): array
@@ -54,7 +53,7 @@ final class DataGymLoader extends Loader
     }
 
     /**
-     * @param int[] $byteArray
+     * @param  int[]  $byteArray
      * @return array<string, int>
      */
     private function byteToCharMap(array $byteArray): array
@@ -69,9 +68,8 @@ final class DataGymLoader extends Loader
     }
 
     /**
-     * @param int[] $rankToIntByte
-     * @param array<string, int> $dataGymByteToByteMap
-     * @return void
+     * @param  int[]  $rankToIntByte
+     * @param  array<string, int>  $dataGymByteToByteMap
      */
     private function addBytesNotInRank(array &$rankToIntByte, array &$dataGymByteToByteMap): void
     {
@@ -90,7 +88,6 @@ final class DataGymLoader extends Loader
     }
 
     /**
-     * @param string $vocabBpeContents
      * @return array<array{0: string, 1: string}>
      */
     private function createBpeMerges(string $vocabBpeContents): array
@@ -98,13 +95,13 @@ final class DataGymLoader extends Loader
         $lines = explode("\n", $vocabBpeContents);
         $mergeLines = array_slice($lines, 1, -1);
         /** @var array<array{0: string, 1: string}> $merges */
-        $merges = array_map(fn($mergeStr) => explode(' ', $mergeStr, 2), $mergeLines);
+        $merges = array_map(fn (string $mergeStr): array => explode(' ', $mergeStr, 2), $mergeLines);
 
         return $merges;
     }
 
     /**
-     * @param int[] $rankToIntByte
+     * @param  int[]  $rankToIntByte
      * @return array<string, int>
      */
     private function createBpeRanks(array $rankToIntByte): array
@@ -118,10 +115,9 @@ final class DataGymLoader extends Loader
     }
 
     /**
-     * @param array<array{0: string, 1: string}> $bpeMerges
-     * @param array<string, int> $bpeRanks
-     * @param array<string, int> $dataGymByteToByteMap
-     * @return void
+     * @param  array<array{0: string, 1: string}>  $bpeMerges
+     * @param  array<string, int>  $bpeRanks
+     * @param  array<string, int>  $dataGymByteToByteMap
      */
     private function addMergeRanksToBpe(array $bpeMerges, array &$bpeRanks, array $dataGymByteToByteMap): void
     {
@@ -139,10 +135,9 @@ final class DataGymLoader extends Loader
     }
 
     /**
-     * @param string $encoderJsonFile
-     * @param string|null $encoderJsonHash
-     * @param array<string, int> $dataGymByteToByteMap
+     * @param  array<string, int>  $dataGymByteToByteMap
      * @return array<string, int>
+     *
      * @throws \Rahul900day\Tiktoken\Exceptions\InvalidChecksumException
      */
     private function loadEncoderJson(string $encoderJsonFile, ?string $encoderJsonHash, array $dataGymByteToByteMap): array
@@ -162,21 +157,20 @@ final class DataGymLoader extends Loader
     }
 
     /**
-     * @param array<string, int> $bpeRanks
-     * @param array<string, int> $encoderJson
-     * @return void
-     * @throws \Exception
+     * @param  array<string, int>  $bpeRanks
+     * @param  array<string, int>  $encoderJson
+     *
+     * @throws TiktokenException
      */
     private function validateBpeAndEncoderJsonRanks(array $bpeRanks, array $encoderJson): void
     {
         if ($bpeRanks !== $encoderJson) {
-            throw new \Exception("BPE Ranks & Encoder JSON Ranks Doesn't Match");
+            throw new TiktokenException("BPE Ranks & Encoder JSON Ranks Doesn't Match");
         }
     }
 
     /**
-     * @param string|int $value
-     * @param array<string, int> $dataGymByteToByte
+     * @param  array<string, int>  $dataGymByteToByte
      * @return int[]
      */
     private function decodeDataGym(string|int $value, array $dataGymByteToByte): array

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken;
 
-use Exception;
 use Rahul900day\Tiktoken\Contracts\BpeContract;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
+use Rahul900day\Tiktoken\Exceptions\TiktokenException;
 use Rahul900day\Tiktoken\Utils\ArrayUtil;
 use Rahul900day\Tiktoken\Utils\EncoderUtil;
 
@@ -99,7 +99,7 @@ final class Bpe implements BpeContract
     /**
      * {@inheritDoc}
      *
-     * @throws Exception
+     * @throws TiktokenException
      */
     public function encodeOrdinary(string $text): array
     {
@@ -123,9 +123,10 @@ final class Bpe implements BpeContract
     }
 
     /**
-     * @param int[] $bytes
+     * @param  int[]  $bytes
      * @return int[]
-     * @throws Exception
+     *
+     * @throws TiktokenException
      */
     private function bpe(array $bytes): array
     {
@@ -148,16 +149,16 @@ final class Bpe implements BpeContract
             $minRank = $this->getMinRankPair(ArrayUtil::getSegment($bytePairs, 0, count($bytePairs) - 1));
         }
 
-        return array_map(function ($pair) use ($bytes): int {
+        return array_map(function (array $pair) use ($bytes): int {
             $pairs = ArrayUtil::getSegment($bytes, $pair[0][0], $pair[1][0]);
 
-            return $this->getRank($pairs) ?? throw new Exception('Token cannot be found for: '.implode(',', $pairs));
+            return $this->getRank($pairs) ?? throw new TiktokenException('Token cannot be found for: '.implode(',', $pairs));
 
         }, $this->getAllPairs($bytePairs));
     }
 
     /**
-     * @param int[] $bytes
+     * @param  int[]  $bytes
      * @return array<array{0: int, 1: int}>
      */
     private function initializePairs(array $bytes): array
@@ -178,7 +179,7 @@ final class Bpe implements BpeContract
     }
 
     /**
-     * @param array<array{0: int, 1: int}> $parts
+     * @param  array<array{0: int, 1: int}>  $parts
      * @return array{0: int, 1: int}
      */
     private function getMinRankPair(array $parts): array
@@ -190,14 +191,13 @@ final class Bpe implements BpeContract
                 $minRank = [$rank, $index];
             }
         }
+
         return $minRank;
     }
 
     /**
-     * @param int[] $bytes
-     * @param array<array{0: int, 1: int}> $parts
-     * @param int $startIndex
-     * @return int
+     * @param  int[]  $bytes
+     * @param  array<array{0: int, 1: int}>  $parts
      */
     private function calculateMergedRank(array $bytes, array $parts, int $startIndex): int
     {
@@ -217,7 +217,7 @@ final class Bpe implements BpeContract
     }
 
     /**
-     * @param non-empty-array<int[]> $parts
+     * @param  non-empty-array<int[]>  $parts
      * @return array<array<int[]>>
      */
     private function getAllPairs(array $parts): array
@@ -235,8 +235,7 @@ final class Bpe implements BpeContract
     }
 
     /**
-     * @param int[]|string $bytes
-     * @return int|null
+     * @param  int[]|string  $bytes
      */
     private function getRank(array|string $bytes): ?int
     {

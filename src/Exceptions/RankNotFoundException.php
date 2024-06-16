@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Exceptions;
 
-use Exception;
-
-class RankNotFoundException extends Exception
+class RankNotFoundException extends TiktokenException
 {
     public function __construct(int $rank)
     {

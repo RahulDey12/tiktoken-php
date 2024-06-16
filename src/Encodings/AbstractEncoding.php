@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
+namespace Rahul900day\Tiktoken\Encodings;
 
 use Rahul900day\Tiktoken\Contracts\EncodingContract;
 use Rahul900day\Tiktoken\Encoder;

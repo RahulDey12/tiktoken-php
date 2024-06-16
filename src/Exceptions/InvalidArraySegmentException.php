@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Exceptions;
 
-use InvalidArgumentException;
-
-class InvalidArraySegmentException extends InvalidArgumentException
+class InvalidArraySegmentException extends TiktokenException
 {
     public function __construct(int $start, int $end)
     {

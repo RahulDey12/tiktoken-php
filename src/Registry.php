@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rahul900day\Tiktoken;
 
 use Closure;
-use Exception;
 use Rahul900day\Tiktoken\Contracts\EncodingContract;
 use Rahul900day\Tiktoken\Encodings\OpenAiPublic\Cl100KBaseEncoding;
 use Rahul900day\Tiktoken\Encodings\OpenAiPublic\Gpt2Encoding;
@@ -13,6 +12,7 @@ use Rahul900day\Tiktoken\Encodings\OpenAiPublic\P50KBaseEncoding;
 use Rahul900day\Tiktoken\Encodings\OpenAiPublic\P50KEditEncoding;
 use Rahul900day\Tiktoken\Encodings\OpenAiPublic\R50KBaseEncoding;
 use Rahul900day\Tiktoken\Exceptions\InvalidEncodingException;
+use Rahul900day\Tiktoken\Exceptions\TiktokenException;
 
 class Registry
 {
@@ -69,7 +69,7 @@ class Registry
         $encoding = $callable();
 
         if (! $encoding instanceof Encoder) {
-            throw new Exception("EncodingContract {$name} must return ".Encoder::class);
+            throw new TiktokenException("Encoding {$name} must return a ".Encoder::class.' instance.');
         }
 
         self::$resolvedEncodings[$name] = $encoding;

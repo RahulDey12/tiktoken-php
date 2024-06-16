@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rahul900day\Tiktoken\Encodings\OpenAiPublic;
 
+use Rahul900day\Tiktoken\Encodings\AbstractEncoding;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
 use Rahul900day\Tiktoken\Loaders\TiktokenLoader;
 use Rahul900day\Tiktoken\Readers\HttpReader;
