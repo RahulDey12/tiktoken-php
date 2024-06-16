@@ -12,22 +12,23 @@
         "ext-ctype": "*",
         "php-http/discovery": "^1.19",
         "psr/http-client": "^1.0",
-        "psr/http-client-implementation": "^1.0",
+        "psr/http-client-implementation": "^1.0.1",
         "psr/http-factory-implementation": "*",
-        "psr/http-message": "^1.0|^2.0",
+        "psr/http-message": "^1.1.0|^2.0",
         "symfony/cache": "^6.1|^7.0",
         "symfony/filesystem": "^6.1|^7.0"
     },
     "require-dev": {
-        "guzzlehttp/guzzle": "^7.0",
-        "guzzlehttp/psr7": "*",
-        "symfony/var-dumper": "^6.1|^7.0",
-        "rector/rector": "^1.0",
-        "laravel/pint": "^1.15",
+        "guzzlehttp/guzzle": "^7.8.1",
+        "guzzlehttp/psr7": "^2.6.1",
+        "laravel/pint": "^1.16",
+        "mockery/mockery": "^1.6.12",
         "pestphp/pest": "^2.34",
-        "mockery/mockery": "^1.6",
-        "phpstan/phpstan": "^1.11",
-        "pestphp/pest-plugin-type-coverage": "^2.8"
+        "pestphp/pest-plugin-arch": "^2.7",
+        "pestphp/pest-plugin-type-coverage": "^2.8.2",
+        "phpstan/phpstan": "^1.11.3",
+        "rector/rector": "^1.1.0",
+        "symfony/var-dumper": "^6.1|^7.0"
     },
     "autoload": {
         "psr-4": {

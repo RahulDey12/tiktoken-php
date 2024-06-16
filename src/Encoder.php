@@ -6,6 +6,7 @@ namespace Rahul900day\Tiktoken;
 
 use Rahul900day\Tiktoken\Contracts\BpeContract;
 use Rahul900day\Tiktoken\Enums\SpecialToken;
+use Rahul900day\Tiktoken\Exceptions\InvalidPatternException;
 use Rahul900day\Tiktoken\Exceptions\RankNotFoundException;
 use Rahul900day\Tiktoken\Exceptions\SpecialTokenNotAllowedException;
 use Rahul900day\Tiktoken\Exceptions\TiktokenException;
@@ -59,12 +60,12 @@ class Encoder
 
     /**
      * @param  string[]|'all'  $allowedSpecial
+     * @param  string[]|'all'  $disallowedSpecial
      * @return int[]
      *
-     * @throws Exceptions\InvalidPatternException
-     * @throws SpecialTokenNotAllowedException
+     * @throws SpecialTokenNotAllowedException|InvalidPatternException|TiktokenException
      */
-    public function encode(string $text, array|string $allowedSpecial = [], string $disallowedSpecial = 'all'): array
+    public function encode(string $text, array|string $allowedSpecial = [], string|array $disallowedSpecial = 'all'): array
     {
         if ($allowedSpecial === 'all') {
             $allowedSpecial = $this->getSpecialTokensKeys();
@@ -74,7 +75,6 @@ class Encoder
             $disallowedSpecial = array_diff($this->getSpecialTokensKeys(), $allowedSpecial);
         }
 
-        // @phpstan-ignore argument.type
         if (count($disallowedSpecial) > 0) {
             $regex = SpecialToken::getRegex($disallowedSpecial);
 
@@ -89,12 +89,12 @@ class Encoder
     /**
      * @param  array<string>  $texts
      * @param  string[]|'all'  $allowedSpecial
+     * @param  string[]|'all'  $disallowedSpecial
      * @return array<int[]>
      *
-     * @throws Exceptions\InvalidPatternException
-     * @throws SpecialTokenNotAllowedException
+     * @throws SpecialTokenNotAllowedException|InvalidPatternException|TiktokenException
      */
-    public function encodeBatch(array $texts, array|string $allowedSpecial = [], string $disallowedSpecial = 'all'): array
+    public function encodeBatch(array $texts, array|string $allowedSpecial = [], string|array $disallowedSpecial = 'all'): array
     {
         $result = [];
 

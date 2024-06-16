@@ -16,12 +16,16 @@ enum SpecialToken: string
     case ENDOFPROMPT = '<|endofprompt|>';
 
     /**
-     * @param  array<string>  $tokens
+     * @param  array<string>|string  $tokens
      *
      * @throws InvalidPatternException
      */
-    public static function getRegex(array $tokens): string
+    public static function getRegex(array|string $tokens): string
     {
+        if (is_string($tokens)) {
+            $tokens = [$tokens];
+        }
+
         $parts = array_map('preg_quote', $tokens);
         $regex = '/'.implode('|', $parts).'/u';
 
