@@ -1,6 +1,6 @@
 # ⏳ Tiktoken for PHP
 
-PHP implementation of OpenAI's original [Tiktoken](https://github.com/openai/tiktoken).
+Most compatible PHP implementation of OpenAI's original [Tiktoken](https://github.com/openai/tiktoken).
 
 ## Get Started
 
